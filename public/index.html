@@ -580,6 +580,20 @@ const CITY_COORDS = {
   'athens': {lat:37.9838,lng:23.7275},
   // Other
   'konstanz': {lat:47.6633,lng:9.1750}, 'gdansk': {lat:54.3520,lng:18.6466},
+  // Spain extra
+  'bilbao': {lat:43.2630,lng:-2.9350}, 'granada': {lat:37.1773,lng:-3.5986},
+  'alicante': {lat:38.3452,lng:-0.4810}, 'palma': {lat:39.5696,lng:2.6502},
+  'zaragoza': {lat:41.6488,lng:-0.8891}, 'santiago de compostela': {lat:42.8782,lng:-8.5448},
+  // France extra
+  'nantes': {lat:47.2184,lng:-1.5536}, 'montpellier': {lat:43.6108,lng:3.8767},
+  'lille': {lat:50.6292,lng:3.0573},
+  // Scandinavia extra
+  'bergen': {lat:60.3913,lng:5.3221}, 'tampere': {lat:61.4978,lng:23.7610},
+  'turku': {lat:60.4518,lng:22.2666},
+  // Eastern Europe extra
+  'bratislava': {lat:48.1486,lng:17.1077}, 'ljubljana': {lat:46.0569,lng:14.5058},
+  'tallinn': {lat:59.4370,lng:24.7536}, 'riga': {lat:56.9496,lng:24.1052},
+  'vilnius': {lat:54.6872,lng:25.2797},
 };
 
 // ─── CITY NAME ALIASES ───
@@ -840,8 +854,8 @@ function renderDeals(fromCity, deals) {
     const arcPoints = generateArcPoints(fromCoords, toCoords, 50);
     const arc = L.polyline(arcPoints, {
       color: ARC_COLORS.camper,
-      weight: Math.min(2 + dealCount, 6),
-      opacity: 0.6,
+      weight: Math.min(1.5 + dealCount * 0.5, 3.5),
+      opacity: 0.4,
       smoothFactor: 1,
     });
 
@@ -858,11 +872,11 @@ function renderDeals(fromCity, deals) {
 
     // Hover effects
     arc.on('mouseover', function() {
-      this.setStyle({ weight: Math.min(4 + dealCount, 8), opacity: 1 });
+      this.setStyle({ weight: Math.min(2.5 + dealCount * 0.5, 5), opacity: 0.7 });
       highlightGroup(toKey);
     });
     arc.on('mouseout', function() {
-      this.setStyle({ weight: Math.min(2 + dealCount, 6), opacity: 0.6 });
+      this.setStyle({ weight: Math.min(1.5 + dealCount * 0.5, 3.5), opacity: 0.4 });
       unhighlightGroup(toKey);
     });
     arc.on('click', function() {
