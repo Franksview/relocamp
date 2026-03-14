@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relocamp — Campervan Relocation Deals on a Map</title>
+<meta name="description" content="Explore campervan relocation deals across Europe on an interactive map. Build multi-leg trips from €1/day.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+:root {
+  --forest: #3d6b5e;
+  --forest-light: #4a8a75;
+  --rust: #c4704b;
+  --rust-hover: #b5603d;
+  --sand: #f5f0e8;
+  --paper: #faf8f4;
+  --ink: #1a1a1a;
+  --ink-light: #3a3a3a;
+  --stone: #94a3b8;
+  --warm: #78716c;
+  --sky: #4a7fa5;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --transition: 0.2s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ─── MAP ─── */
+#map {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
+}
+
+/* ─── SIDEBAR (desktop) ─── */
+.sidebar {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 400px;
+  z-index: 10;
+  background: white;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--sand);
+  background: var(--paper);
+}
+
+.sidebar-logo {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.3rem;
+  color: var(--forest);
+  margin-bottom: 12px;
+}
+
+.sidebar-logo span { color: var(--rust); }
+
+.search-input-wrap {
+  position: relative;
+}
+
+.search-input-wrap input {
+  width: 100%;
+  padding: 12px 16px 12px 40px;
+  border: 2px solid var(--sand);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.search-input-wrap input:focus {
+  border-color: var(--forest);
+}
+
+.search-input-wrap::before {
+  content: '\1F50D';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  background: white;
+  border: 1px solid var(--sand);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 20;
+  display: none;
+  box-shadow: var(--shadow-md);
+}
+
+.autocomplete-list.visible { display: block; }
+
+.autocomplete-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--sand);
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: var(--paper);
+  color: var(--forest);
+}
+
+/* ─── SIDEBAR CONTENT ─── */
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.sidebar-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--stone);
+}
+
+.sidebar-empty h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: var(--ink-light);
+  font-weight: 400;
+}
+
+.sidebar-empty p { font-size: 0.85rem; line-height: 1.5; }
+
+.sidebar-loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--stone);
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 12px; height: 12px;
+  background: var(--forest);
+  border-radius: 50%;
+  animation: pulse 1.5s ease infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+/* ─── DEAL GROUP ─── */
+.deal-group {
+  border-bottom: 1px solid var(--sand);
+}
+
+.deal-group-header {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.deal-group-header:hover { background: var(--paper); }
+
+.deal-group-route {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.deal-group-meta {
+  font-size: 0.78rem;
+  color: var(--stone);
+}
+
+.deal-group-count {
+  background: var(--forest);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.deal-group-body {
+  display: none;
+  padding: 0 20px 12px;
+}
+
+.deal-group.expanded .deal-group-body { display: block; }
+
+/* ─── DEAL CARD ─── */
+.deal-card {
+  background: var(--paper);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: box-shadow var(--transition);
+}
+
+.deal-card:hover { box-shadow: var(--shadow-md); }
+
+.deal-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.deal-vehicle { font-size: 0.82rem; font-weight: 600; }
+.deal-price { font-size: 0.82rem; color: var(--forest); font-weight: 700; }
+
+.deal-details {
+  font-size: 0.75rem;
+  color: var(--warm);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.deal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-add-trip {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--forest);
+  color: white;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.btn-add-trip:hover { background: var(--forest-light); }
+
+.btn-book {
+  padding: 8px 12px;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius-sm);
+  background: white;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+
+.btn-book:hover { border-color: var(--rust); color: var(--rust); }
+
+/* ─── TRANSPORT OPTIONS ─── */
+.transport-section {
+  padding: 12px 20px;
+  border-top: 1px solid var(--sand);
+}
+
+.transport-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--stone);
+  margin-bottom: 8px;
+}
+
+.transport-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.transport-btn {
+  padding: 6px 12px;
+  border: 1.5px solid var(--sand);
+  border-radius: 20px;
+  background: white;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+
+.transport-btn:hover {
+  border-color: var(--sky);
+  color: var(--sky);
+}
+
+/* ─── TRIP BAR (bottom) ─── */
+.trip-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 15;
+  background: white;
+  border-top: 1px solid var(--sand);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  padding: 12px 20px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+
+.trip-bar.visible { display: flex; }
+
+.trip-bar-legs {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.trip-bar-city {
+  white-space: nowrap;
+  color: var(--ink-light);
+}
+
+.trip-bar-arrow {
+  color: var(--forest);
+  font-size: 0.7rem;
+}
+
+.trip-bar-summary {
+  font-size: 0.75rem;
+  color: var(--warm);
+  white-space: nowrap;
+}
+
+.trip-bar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-share {
+  padding: 8px 14px;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius-sm);
+  background: white;
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-share:hover { border-color: var(--forest); color: var(--forest); }
+
+.btn-clear-trip {
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--sand);
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--warm);
+}
+
+.btn-clear-trip:hover { background: #ece5d9; }
+
+/* ─── MAP TOOLTIP ─── */
+.arc-tooltip {
+  background: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  max-width: 240px;
+}
+
+.arc-tooltip .tt-route { font-weight: 600; margin-bottom: 2px; }
+.arc-tooltip .tt-deals { color: var(--forest); }
+.arc-tooltip .tt-price { color: var(--warm); font-size: 0.75rem; }
+
+/* ─── DEAL COUNT MARKERS ─── */
+.deal-count-marker {
+  background: var(--forest);
+  color: white;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 2px solid white;
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.origin-marker {
+  background: var(--rust);
+  color: white;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  white-space: nowrap;
+}
+
+/* ─── MOBILE ─── */
+@media (max-width: 768px) {
+  .sidebar {
+    top: auto;
+    left: 0; right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 45vh;
+    border-radius: 16px 16px 0 0;
+    transition: height 0.3s ease;
+  }
+
+  .sidebar.collapsed {
+    height: 120px;
+  }
+
+  .sidebar.expanded {
+    height: 80vh;
+  }
+
+  .sidebar-header {
+    padding: 8px 20px 12px;
+  }
+
+  .drag-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--stone);
+    border-radius: 2px;
+    margin: 0 auto 10px;
+    opacity: 0.5;
+  }
+
+  .sidebar-logo { display: none; }
+
+  .trip-bar {
+    bottom: 45vh;
+    transition: bottom 0.3s ease;
+  }
+
+  .sidebar.collapsed ~ .trip-bar { bottom: 120px; }
+  .sidebar.expanded ~ .trip-bar { bottom: 80vh; }
+}
+
+@media (min-width: 769px) {
+  .drag-handle { display: none; }
+  #map { left: 400px; }
+  .trip-bar { left: 400px; }
+}
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div class="sidebar" id="sidebar">
+  <div class="drag-handle" id="dragHandle"></div>
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Relo<span>camp</span></div>
+    <div class="search-input-wrap">
+      <input type="text" id="searchInput" placeholder="Enter a city to explore deals..." autocomplete="off">
+      <div class="autocomplete-list" id="autocomplete"></div>
+    </div>
+  </div>
+  <div class="sidebar-content" id="sidebarContent">
+    <div class="sidebar-empty">
+      <h3>Explore campervan relocations</h3>
+      <p>Type a city name above to see all available campervan relocation deals radiating from that city on the map.</p>
+      <p style="margin-top:12px;font-size:0.78rem;color:var(--warm);">Deals from €1/day &middot; Imoova &middot; Roadsurfer &middot; Indie Campers &middot; Bunk &middot; Movacar</p>
+    </div>
+  </div>
+</div>
+
+<div class="trip-bar" id="tripBar">
+  <div class="trip-bar-legs" id="tripBarLegs"></div>
+  <div class="trip-bar-summary" id="tripBarSummary"></div>
+  <div class="trip-bar-actions">
+    <button class="btn-share" onclick="shareTrip()">Share</button>
+    <button class="btn-clear-trip" onclick="clearTrip()">Clear</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ─── CITY COORDINATES ───
+const CITY_COORDS = {
+  // Germany
+  'munich': {lat:48.1351,lng:11.5820}, 'berlin': {lat:52.5200,lng:13.4050},
+  'hamburg': {lat:53.5511,lng:9.9937}, 'frankfurt': {lat:50.1109,lng:8.6821},
+  'cologne': {lat:50.9375,lng:6.9603}, 'dusseldorf': {lat:51.2277,lng:6.7735},
+  'dortmund': {lat:51.5136,lng:7.4653}, 'stuttgart': {lat:48.7758,lng:9.1829},
+  'nuremberg': {lat:49.4521,lng:11.0767}, 'hanover': {lat:52.3759,lng:9.7320},
+  'leipzig': {lat:51.3397,lng:12.3731}, 'dresden': {lat:51.0504,lng:13.7373},
+  'freiburg': {lat:47.9990,lng:7.8421}, 'bremen': {lat:53.0793,lng:8.8017},
+  'kiel': {lat:54.3233,lng:10.1228}, 'augsburg': {lat:48.3705,lng:10.8978},
+  'bonn': {lat:50.7374,lng:7.0982}, 'mannheim': {lat:49.4875,lng:8.4660},
+  'essen': {lat:51.4556,lng:7.0116}, 'bochum': {lat:51.4818,lng:7.2162},
+  'rostock': {lat:54.0924,lng:12.0991}, 'regensburg': {lat:49.0134,lng:12.1016},
+  // Netherlands
+  'amsterdam': {lat:52.3676,lng:4.9041}, 'rotterdam': {lat:51.9244,lng:4.4777},
+  'eindhoven': {lat:51.4416,lng:5.4697}, 'utrecht': {lat:52.0907,lng:5.1214},
+  'the hague': {lat:52.0705,lng:4.3007}, 'groningen': {lat:53.2194,lng:6.5665},
+  // Belgium
+  'brussels': {lat:50.8503,lng:4.3517}, 'antwerp': {lat:51.2194,lng:4.4025},
+  'ghent': {lat:51.0543,lng:3.7174}, 'bruges': {lat:51.2093,lng:3.2247},
+  // France
+  'paris': {lat:48.8566,lng:2.3522}, 'lyon': {lat:45.7640,lng:4.8357},
+  'marseille': {lat:43.2965,lng:5.3698}, 'nice': {lat:43.7102,lng:7.2620},
+  'bordeaux': {lat:44.8378,lng:-0.5792}, 'toulouse': {lat:43.6047,lng:1.4442},
+  'strasbourg': {lat:48.5734,lng:7.7521},
+  // Spain
+  'barcelona': {lat:41.3874,lng:2.1686}, 'madrid': {lat:40.4168,lng:-3.7038},
+  'seville': {lat:37.3891,lng:-5.9845}, 'valencia': {lat:39.4699,lng:-0.3763},
+  'malaga': {lat:36.7213,lng:-4.4214},
+  // Portugal
+  'lisbon': {lat:38.7223,lng:-9.1393}, 'porto': {lat:41.1579,lng:-8.6291},
+  // Italy
+  'milan': {lat:45.4642,lng:9.1900}, 'rome': {lat:41.9028,lng:12.4964},
+  'florence': {lat:43.7696,lng:11.2558}, 'venice': {lat:45.4408,lng:12.3155},
+  'naples': {lat:40.8518,lng:14.2681}, 'bologna': {lat:44.4949,lng:11.3426},
+  // UK & Ireland
+  'london': {lat:51.5074,lng:-0.1278}, 'edinburgh': {lat:55.9533,lng:-3.1883},
+  'manchester': {lat:53.4808,lng:-2.2426}, 'dublin': {lat:53.3498,lng:-6.2603},
+  'belfast': {lat:54.5973,lng:-5.9301}, 'glasgow': {lat:55.8642,lng:-4.2518},
+  // Austria & Switzerland
+  'vienna': {lat:48.2082,lng:16.3738}, 'salzburg': {lat:47.8095,lng:13.0550},
+  'innsbruck': {lat:47.2692,lng:11.4041}, 'zurich': {lat:47.3769,lng:8.5417},
+  'geneva': {lat:46.2044,lng:6.1432}, 'bern': {lat:46.9480,lng:7.4474},
+  'basel': {lat:47.5596,lng:7.5886},
+  // Scandinavia
+  'copenhagen': {lat:55.6761,lng:12.5683}, 'stockholm': {lat:59.3293,lng:18.0686},
+  'oslo': {lat:59.9139,lng:10.7522}, 'helsinki': {lat:60.1699,lng:24.9384},
+  'gothenburg': {lat:57.7089,lng:11.9746}, 'malmo': {lat:55.6050,lng:13.0038},
+  // Eastern Europe
+  'prague': {lat:50.0755,lng:14.4378}, 'budapest': {lat:47.4979,lng:19.0402},
+  'warsaw': {lat:52.2297,lng:21.0122}, 'krakow': {lat:50.0647,lng:19.9450},
+  'zagreb': {lat:45.8150,lng:15.9819}, 'bucharest': {lat:44.4268,lng:26.1025},
+  'sofia': {lat:42.6977,lng:23.3219}, 'belgrade': {lat:44.7866,lng:20.4489},
+  'dubrovnik': {lat:42.6507,lng:18.0944}, 'split': {lat:43.5081,lng:16.4402},
+  // Greece
+  'athens': {lat:37.9838,lng:23.7275},
+  // Other
+  'konstanz': {lat:47.6633,lng:9.1750}, 'gdansk': {lat:54.3520,lng:18.6466},
+};
+
+// ─── CITY NAME ALIASES ───
+const CITY_ALIASES = {
+  'münchen': 'munich', 'munchen': 'munich', 'muenchen': 'munich',
+  'köln': 'cologne', 'koln': 'cologne', 'keulen': 'cologne',
+  'düsseldorf': 'dusseldorf',
+  'nürnberg': 'nuremberg', 'nurnberg': 'nuremberg',
+  'hannover': 'hanover',
+  'den haag': 'the hague',
+  'antwerpen': 'antwerp', 'brussel': 'brussels', 'brugge': 'bruges', 'gent': 'ghent',
+  'parijs': 'paris',
+  'londen': 'london', 'londres': 'london',
+  'wien': 'vienna', 'wenen': 'vienna',
+  'prag': 'prague', 'praha': 'prague',
+  'kopenhagen': 'copenhagen', 'københavn': 'copenhagen',
+  'zürich': 'zurich',
+  'geneve': 'geneva', 'genf': 'geneva',
+  'milano': 'milan', 'mailand': 'milan',
+  'roma': 'rome',
+  'lisboa': 'lisbon', 'lissabon': 'lisbon',
+  'warschau': 'warsaw', 'warszawa': 'warsaw',
+  'boekarest': 'bucharest',
+  'athene': 'athens',
+  'sevilla': 'seville',
+  'málaga': 'malaga',
+  'firenze': 'florence', 'florenz': 'florence',
+  'venezia': 'venice', 'venedig': 'venice',
+  'napoli': 'naples', 'neapel': 'naples',
+  'malmö': 'malmo',
+  'kraków': 'krakow',
+};
+
+// ─── AFFILIATE LINKS ───
+const AFFILIATE_LINKS = {
+  trainline: (from, to) => `https://www.thetrainline.com/book/results?origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}`,
+  flixbus: (from, to) => `https://global.flixbus.com/bus-routes/bus-${from.toLowerCase().replace(/\s+/g,'-')}-${to.toLowerCase().replace(/\s+/g,'-')}`,
+  kiwi: (from, to) => `https://www.kiwi.com/en/search/results/${encodeURIComponent(from.toLowerCase())}/${encodeURIComponent(to.toLowerCase())}/anytime/no-return`,
+  booking: (city) => `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}`,
+  hostelworld: (city) => `https://www.hostelworld.com/st/hostels/${encodeURIComponent(city.toLowerCase().replace(/\s+/g,'-'))}/`,
+};
+
+// ─── ARC COLORS ───
+const ARC_COLORS = {
+  camper: '#3d6b5e',
+  train: '#4a7fa5',
+  bus: '#d4870f',
+  flight: '#8b5cf6',
+  selected: '#1a1a1a',
+};
+
+// ─── STATE ───
+let map;
+let currentCity = null;
+let tripLegs = [];
+let arcLayers = L.layerGroup();
+let markerLayers = L.layerGroup();
+let tripPathLayers = L.layerGroup();
+let originMarker = null;
+
+// ─── MAP INIT ───
+function initMap() {
+  map = L.map('map', {
+    center: [50, 10],
+    zoom: 5,
+    zoomControl: false,
+    attributionControl: false,
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+  }).addTo(map);
+
+  L.control.zoom({ position: 'topright' }).addTo(map);
+  L.control.attribution({ position: 'bottomright', prefix: false })
+    .addAttribution('<a href="https://carto.com">CARTO</a> | <a href="https://osm.org">OSM</a>')
+    .addTo(map);
+
+  arcLayers.addTo(map);
+  markerLayers.addTo(map);
+  tripPathLayers.addTo(map);
+
+  loadTrip();
+  renderTripBar();
+
+  // Check for shared trip in URL
+  const params = new URLSearchParams(location.search);
+  if (params.get('trip')) {
+    try {
+      const tripData = JSON.parse(atob(params.get('trip')));
+      tripLegs = tripData;
+      saveTrip();
+      renderTripBar();
+      renderTripPath();
+      if (tripLegs.length > 0) {
+        const lastCity = tripLegs[tripLegs.length - 1].to.toLowerCase();
+        selectCity(resolveCity(lastCity));
+      }
+    } catch(e) { console.warn('Invalid trip URL'); }
+  }
+}
+
+// ─── CITY RESOLUTION ───
+function resolveCity(input) {
+  const key = input.toLowerCase().trim().replace(/\s+/g, ' ');
+  if (CITY_COORDS[key]) return key;
+  if (CITY_ALIASES[key]) return CITY_ALIASES[key];
+  // Fuzzy: try removing diacritics
+  const simple = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (CITY_COORDS[simple]) return simple;
+  if (CITY_ALIASES[simple]) return CITY_ALIASES[simple];
+  return null;
+}
+
+function displayCity(slug) {
+  if (!slug) return '';
+  return slug.split(/[\s-]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+// ─── AUTOCOMPLETE ───
+const searchInput = document.getElementById('searchInput');
+const autocompleteEl = document.getElementById('autocomplete');
+let acIndex = -1;
+
+searchInput.addEventListener('input', function() {
+  const val = this.value.toLowerCase().trim();
+  if (val.length < 2) { autocompleteEl.classList.remove('visible'); return; }
+
+  const cities = Object.keys(CITY_COORDS);
+  const aliasKeys = Object.keys(CITY_ALIASES);
+
+  // Match city names and aliases
+  const matches = new Set();
+  cities.forEach(c => { if (c.includes(val)) matches.add(c); });
+  aliasKeys.forEach(a => { if (a.includes(val)) matches.add(CITY_ALIASES[a]); });
+
+  if (matches.size === 0) { autocompleteEl.classList.remove('visible'); return; }
+
+  const sorted = [...matches].sort();
+  autocompleteEl.innerHTML = sorted.slice(0, 8).map((c, i) =>
+    `<div class="autocomplete-item" data-city="${c}" onclick="pickCity('${c}')">${displayCity(c)}</div>`
+  ).join('');
+  autocompleteEl.classList.add('visible');
+  acIndex = -1;
+});
+
+searchInput.addEventListener('keydown', function(e) {
+  const items = autocompleteEl.querySelectorAll('.autocomplete-item');
+  if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex + 1, items.length - 1); updateAcHighlight(items); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex - 1, 0); updateAcHighlight(items); }
+  else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (acIndex >= 0 && items[acIndex]) {
+      pickCity(items[acIndex].dataset.city);
+    } else {
+      const resolved = resolveCity(this.value);
+      if (resolved) pickCity(resolved);
+    }
+  }
+  else if (e.key === 'Escape') { autocompleteEl.classList.remove('visible'); }
+});
+
+searchInput.addEventListener('blur', () => setTimeout(() => autocompleteEl.classList.remove('visible'), 200));
+
+function updateAcHighlight(items) {
+  items.forEach((el, i) => el.classList.toggle('active', i === acIndex));
+}
+
+function pickCity(city) {
+  searchInput.value = displayCity(city);
+  autocompleteEl.classList.remove('visible');
+  selectCity(city);
+}
+
+// ─── SELECT CITY: search deals and show arcs ───
+async function selectCity(city) {
+  if (!city || !CITY_COORDS[city]) return;
+  currentCity = city;
+  const coords = CITY_COORDS[city];
+
+  // Clear previous arcs and markers
+  arcLayers.clearLayers();
+  markerLayers.clearLayers();
+
+  // Add origin marker
+  if (originMarker) map.removeLayer(originMarker);
+  originMarker = L.marker([coords.lat, coords.lng], {
+    icon: L.divIcon({ className: '', html: `<div class="origin-marker">${displayCity(city)}</div>`, iconAnchor: [50, 15] }),
+  }).addTo(map);
+
+  // Fly to city
+  map.flyTo([coords.lat, coords.lng], 6, { duration: 1.2 });
+
+  // Show loading
+  document.getElementById('sidebarContent').innerHTML = `
+    <div class="sidebar-loading">
+      <span class="pulse-dot"></span> Searching deals from ${displayCity(city)}...
+    </div>
+  `;
+
+  // Fetch deals from Movacamper API
+  try {
+    const res = await fetch('https://www.movacamper.com/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: city, radius: 100 }),
+    });
+    const data = await res.json();
+    const deals = data.deals || [];
+    renderDeals(city, deals);
+  } catch (err) {
+    console.error('Search error:', err);
+    document.getElementById('sidebarContent').innerHTML = `
+      <div class="sidebar-empty">
+        <h3>Could not load deals</h3>
+        <p>Try again in a moment.</p>
+      </div>
+    `;
+  }
+}
+
+// ─── RENDER DEALS + ARCS ───
+function renderDeals(fromCity, deals) {
+  const content = document.getElementById('sidebarContent');
+
+  if (deals.length === 0) {
+    content.innerHTML = `
+      <div class="sidebar-empty">
+        <h3>No camper deals from ${displayCity(fromCity)}</h3>
+        <p>Try a nearby city like Munich, Berlin, or Amsterdam — these hubs usually have 10+ deals.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Group deals by destination
+  const groups = {};
+  deals.forEach(d => {
+    const to = (d.to || 'unknown').toLowerCase().trim().replace(/\s+/g, '-');
+    const toKey = resolveCity(to) || to.replace(/-/g, ' ');
+    if (!groups[toKey]) groups[toKey] = [];
+    groups[toKey].push(d);
+  });
+
+  // Draw arcs and markers for each destination
+  const fromCoords = CITY_COORDS[fromCity];
+  Object.keys(groups).forEach(toKey => {
+    const toCoords = CITY_COORDS[toKey];
+    if (!toCoords || !fromCoords) return;
+
+    const dealCount = groups[toKey].length;
+    const cheapest = groups[toKey].reduce((min, d) => {
+      const p = parseFloat((d.price || '').replace(/[^0-9.]/g, ''));
+      return p < min ? p : min;
+    }, 999);
+
+    // Draw arc
+    const arcPoints = generateArcPoints(fromCoords, toCoords, 50);
+    const arc = L.polyline(arcPoints, {
+      color: ARC_COLORS.camper,
+      weight: Math.min(2 + dealCount, 6),
+      opacity: 0.6,
+      smoothFactor: 1,
+    });
+
+    // Tooltip
+    const priceStr = cheapest < 999 ? `from €${cheapest}/day` : '';
+    const dateStr = groups[toKey][0].date_range || '';
+    arc.bindTooltip(`
+      <div class="arc-tooltip">
+        <div class="tt-route">${displayCity(fromCity)} → ${displayCity(toKey)}</div>
+        <div class="tt-deals">${dealCount} deal${dealCount !== 1 ? 's' : ''}</div>
+        <div class="tt-price">${priceStr} ${dateStr ? '· ' + dateStr : ''}</div>
+      </div>
+    `, { sticky: true, className: '' });
+
+    // Hover effects
+    arc.on('mouseover', function() {
+      this.setStyle({ weight: Math.min(4 + dealCount, 8), opacity: 1 });
+      highlightGroup(toKey);
+    });
+    arc.on('mouseout', function() {
+      this.setStyle({ weight: Math.min(2 + dealCount, 6), opacity: 0.6 });
+      unhighlightGroup(toKey);
+    });
+    arc.on('click', function() {
+      toggleGroup(toKey);
+      const el = document.querySelector(`[data-group="${toKey}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    arcLayers.addLayer(arc);
+
+    // Destination marker
+    const marker = L.marker([toCoords.lat, toCoords.lng], {
+      icon: L.divIcon({
+        className: '',
+        html: `<div class="deal-count-marker">${dealCount}</div>`,
+        iconAnchor: [15, 10],
+      }),
+    });
+    marker.on('click', () => {
+      toggleGroup(toKey);
+      const el = document.querySelector(`[data-group="${toKey}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    markerLayers.addLayer(marker);
+  });
+
+  // Render sidebar deal groups
+  let html = '';
+  const sortedGroups = Object.entries(groups).sort((a, b) => b[1].length - a[1].length);
+
+  sortedGroups.forEach(([toKey, groupDeals]) => {
+    const cheapest = groupDeals.reduce((min, d) => {
+      const p = parseFloat((d.price || '').replace(/[^0-9.]/g, ''));
+      return p < min ? p : min;
+    }, 999);
+    const priceStr = cheapest < 999 ? `from €${cheapest}` : '';
+
+    html += `
+      <div class="deal-group" data-group="${toKey}">
+        <div class="deal-group-header" onclick="toggleGroup('${toKey}')">
+          <div>
+            <div class="deal-group-route">${displayCity(fromCity)} → ${displayCity(toKey)}</div>
+            <div class="deal-group-meta">${priceStr} ${groupDeals[0].date_range ? '· ' + groupDeals[0].date_range : ''}</div>
+          </div>
+          <span class="deal-group-count">${groupDeals.length}</span>
+        </div>
+        <div class="deal-group-body">
+          ${groupDeals.map((d, i) => renderDealCard(d, fromCity, toKey, i)).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  // Transport options (if available)
+  html += renderTransportSection(fromCity);
+
+  content.innerHTML = html;
+}
+
+function renderDealCard(deal, from, to, index) {
+  const providerBadge = deal.provider || 'Unknown';
+  const nearbyNote = deal.nearby_distance ? `<span style="color:var(--sky);font-size:0.72rem;"> (${deal.nearby_distance}km from ${displayCity(deal.nearby_from || from)})</span>` : '';
+
+  return `
+    <div class="deal-card">
+      <div class="deal-card-top">
+        <span class="deal-vehicle">${deal.vehicle || 'Campervan'}${nearbyNote}</span>
+        <span class="deal-price">${deal.price || '€1/day'}</span>
+      </div>
+      <div class="deal-details">
+        ${deal.date_range || ''} · ${deal.seats || '?'} seats · ${deal.transmission || ''} · ${providerBadge}
+      </div>
+      <div class="deal-actions">
+        <button class="btn-add-trip" onclick="addToTrip(${JSON.stringify(deal).replace(/"/g, '&quot;')})">+ Add to trip</button>
+        ${deal.url ? `<a href="${deal.url}" target="_blank" rel="noopener" class="btn-book">Book →</a>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderTransportSection(city) {
+  const c = displayCity(city);
+  return `
+    <div class="transport-section">
+      <div class="transport-title">Also from ${c}</div>
+      <div class="transport-options">
+        <a href="${AFFILIATE_LINKS.trainline(c, '')}" target="_blank" rel="noopener" class="transport-btn">🚆 Train</a>
+        <a href="${AFFILIATE_LINKS.flixbus(c, '')}" target="_blank" rel="noopener" class="transport-btn">🚌 FlixBus</a>
+        <a href="${AFFILIATE_LINKS.kiwi(c, '')}" target="_blank" rel="noopener" class="transport-btn">✈️ Fly</a>
+        <a href="${AFFILIATE_LINKS.booking(c)}" target="_blank" rel="noopener" class="transport-btn">🏨 Stay here</a>
+      </div>
+    </div>
+  `;
+}
+
+// ─── GROUP EXPAND/COLLAPSE ───
+function toggleGroup(key) {
+  const el = document.querySelector(`[data-group="${key}"]`);
+  if (el) el.classList.toggle('expanded');
+}
+
+function highlightGroup(key) {
+  const el = document.querySelector(`[data-group="${key}"]`);
+  if (el) el.style.background = 'var(--paper)';
+}
+
+function unhighlightGroup(key) {
+  const el = document.querySelector(`[data-group="${key}"]`);
+  if (el) el.style.background = '';
+}
+
+// ─── ARC GEOMETRY ───
+function generateArcPoints(from, to, numPoints) {
+  const midLat = (from.lat + to.lat) / 2;
+  const midLng = (from.lng + to.lng) / 2;
+  const dx = to.lng - from.lng;
+  const dy = to.lat - from.lat;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist < 0.01) return [[from.lat, from.lng], [to.lat, to.lng]];
+  const offset = dist * 0.15;
+  const controlLat = midLat + (dx / dist) * offset;
+  const controlLng = midLng - (dy / dist) * offset;
+
+  const points = [];
+  for (let i = 0; i <= numPoints; i++) {
+    const t = i / numPoints;
+    const lat = (1-t)*(1-t)*from.lat + 2*(1-t)*t*controlLat + t*t*to.lat;
+    const lng = (1-t)*(1-t)*from.lng + 2*(1-t)*t*controlLng + t*t*to.lng;
+    points.push([lat, lng]);
+  }
+  return points;
+}
+
+// ─── TRIP BUILDING ───
+function addToTrip(deal) {
+  tripLegs.push({
+    from: deal.from || currentCity,
+    to: deal.to,
+    date_range: deal.date_range,
+    price: deal.price,
+    vehicle: deal.vehicle,
+    provider: deal.provider,
+    url: deal.url,
+  });
+  saveTrip();
+  renderTripBar();
+  renderTripPath();
+
+  // Continue from destination
+  const destCity = resolveCity((deal.to || '').toLowerCase().trim());
+  if (destCity) {
+    searchInput.value = displayCity(destCity);
+    selectCity(destCity);
+  }
+}
+
+function saveTrip() {
+  try { localStorage.setItem('relocamp_trip', JSON.stringify(tripLegs)); } catch(e) {}
+}
+
+function loadTrip() {
+  try {
+    const saved = localStorage.getItem('relocamp_trip');
+    if (saved) tripLegs = JSON.parse(saved);
+  } catch(e) {}
+}
+
+function clearTrip() {
+  tripLegs = [];
+  saveTrip();
+  renderTripBar();
+  tripPathLayers.clearLayers();
+}
+
+function renderTripBar() {
+  const bar = document.getElementById('tripBar');
+  if (tripLegs.length === 0) { bar.classList.remove('visible'); return; }
+  bar.classList.add('visible');
+
+  // Build city chain
+  const cities = [tripLegs[0].from];
+  tripLegs.forEach(l => cities.push(l.to));
+
+  document.getElementById('tripBarLegs').innerHTML = cities.map((c, i) =>
+    `<span class="trip-bar-city">${displayCity(c)}</span>${i < cities.length - 1 ? '<span class="trip-bar-arrow">→</span>' : ''}`
+  ).join('');
+
+  document.getElementById('tripBarSummary').textContent = `${tripLegs.length} leg${tripLegs.length !== 1 ? 's' : ''}`;
+}
+
+function renderTripPath() {
+  tripPathLayers.clearLayers();
+  tripLegs.forEach(leg => {
+    const fromKey = resolveCity((leg.from || '').toLowerCase().trim());
+    const toKey = resolveCity((leg.to || '').toLowerCase().trim());
+    if (!fromKey || !toKey || !CITY_COORDS[fromKey] || !CITY_COORDS[toKey]) return;
+
+    const arcPoints = generateArcPoints(CITY_COORDS[fromKey], CITY_COORDS[toKey], 50);
+    const path = L.polyline(arcPoints, {
+      color: ARC_COLORS.selected,
+      weight: 4,
+      opacity: 0.8,
+      smoothFactor: 1,
+    });
+    tripPathLayers.addLayer(path);
+  });
+}
+
+function shareTrip() {
+  if (tripLegs.length === 0) return;
+  const minimal = tripLegs.map(l => ({
+    f: l.from, t: l.to, d: l.date_range, p: l.price, v: l.vehicle, pr: l.provider, u: l.url
+  }));
+  const encoded = btoa(JSON.stringify(minimal));
+  const url = `${location.origin}/?trip=${encoded}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector('.btn-share');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Share', 2000);
+  }).catch(() => {
+    prompt('Copy this link:', url);
+  });
+}
+
+// ─── MOBILE DRAG HANDLE ───
+const sidebar = document.getElementById('sidebar');
+const dragHandle = document.getElementById('dragHandle');
+let isDragging = false;
+let startY = 0;
+
+if (dragHandle) {
+  dragHandle.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    startY = e.touches[0].clientY;
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const diff = startY - e.touches[0].clientY;
+    if (diff > 50) { sidebar.classList.add('expanded'); sidebar.classList.remove('collapsed'); }
+    else if (diff < -50) { sidebar.classList.remove('expanded'); sidebar.classList.add('collapsed'); }
+  });
+
+  document.addEventListener('touchend', () => { isDragging = false; });
+}
+
+// ─── INIT ───
+initMap();
+</script>
+</body>
+</html>
