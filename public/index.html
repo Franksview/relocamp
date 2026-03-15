@@ -490,6 +490,296 @@ body {
   border-radius: 4px;
 }
 
+/* ─── NO-DEALS / NEARBY HUBS ─── */
+.no-deals-hero {
+  padding: 24px 20px 16px;
+  text-align: center;
+}
+
+.no-deals-hero h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.no-deals-hero p {
+  font-size: 0.82rem;
+  color: var(--stone);
+  line-height: 1.5;
+}
+
+.nearby-hubs {
+  padding: 0 16px 20px;
+}
+
+.nearby-hub {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  background: white;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius);
+  transition: all var(--transition);
+}
+
+.nearby-hub:hover {
+  border-color: var(--forest-light);
+  box-shadow: var(--shadow);
+}
+
+.nearby-hub-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nearby-hub-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.nearby-hub-distance {
+  font-size: 0.75rem;
+  color: var(--warm);
+}
+
+.nearby-hub-status {
+  font-size: 0.72rem;
+  color: var(--stone);
+  margin-top: 2px;
+}
+
+.nearby-hub-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.nearby-hub-actions .btn-add-trip {
+  flex: none;
+  padding: 7px 14px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.nearby-hub-transport {
+  display: flex;
+  gap: 4px;
+}
+
+.nearby-hub-transport .transport-btn {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+}
+
+/* Map marker for nearby hubs */
+.nearby-marker {
+  background: white;
+  color: var(--ink-light);
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 12px;
+  border: 2px dashed var(--sky);
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nearby-marker:hover {
+  border-color: var(--forest);
+  transform: scale(1.05);
+}
+
+.nearby-marker small {
+  font-weight: 400;
+  color: var(--stone);
+  font-size: 0.65rem;
+}
+
+/* ─── WHAT'S NEXT CARD ─── */
+.whats-next {
+  padding: 0;
+}
+
+.whats-next-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 12px;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  border-bottom: 1px solid #c8e6c9;
+}
+
+.whats-next-check {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--forest);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.whats-next-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.whats-next-subtitle {
+  font-size: 0.78rem;
+  color: var(--warm);
+  margin-top: 2px;
+}
+
+.whats-next-prompt {
+  padding: 16px 20px 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-light);
+}
+
+.whats-next-options {
+  padding: 0 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.whats-next-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius);
+  background: white;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: all var(--transition);
+  width: 100%;
+}
+
+.whats-next-option:hover {
+  border-color: var(--forest);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.whats-next-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.whats-next-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.whats-next-text strong {
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.whats-next-text span {
+  font-size: 0.75rem;
+  color: var(--stone);
+}
+
+/* ─── LEG POPUP ─── */
+.leg-popup {
+  position: fixed;
+  z-index: 100;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  padding: 14px 16px;
+  min-width: 200px;
+  max-width: 280px;
+  animation: popIn 0.15s ease;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.leg-popup-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.leg-popup-detail {
+  font-size: 0.75rem;
+  color: var(--warm);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.leg-popup-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.leg-popup-remove {
+  padding: 6px 12px;
+  border: 1.5px solid #fecaca;
+  border-radius: var(--radius-sm);
+  background: #fef2f2;
+  color: #b91c1c;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.leg-popup-remove:hover {
+  background: #fecaca;
+  border-color: #f87171;
+}
+
+.leg-popup-book {
+  padding: 6px 12px;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--ink-light);
+  font-family: inherit;
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+
+.leg-popup-book:hover {
+  border-color: var(--forest);
+  color: var(--forest);
+}
+
+/* ─── SIDEBAR TOGGLE ─── */
+.sidebar-toggle {
+  display: none;
+}
+
 /* ─── TRIP BAR (bottom) ─── */
 .trip-bar {
   position: absolute;
@@ -524,6 +814,20 @@ body {
 .trip-bar-arrow {
   color: var(--forest);
   font-size: 0.7rem;
+}
+
+/* Clickable trip bar items */
+.trip-bar-clickable {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.trip-bar-clickable:hover {
+  background: var(--paper);
+  color: var(--forest);
 }
 
 .trip-bar-summary {
@@ -650,18 +954,80 @@ body {
 
   .sidebar.collapsed ~ .trip-bar { bottom: 120px; }
   .sidebar.expanded ~ .trip-bar { bottom: 80vh; }
+
+  .whats-next-option {
+    padding: 14px 12px;
+  }
+
+  .leg-popup {
+    left: 10px !important;
+    right: 10px !important;
+    max-width: none;
+  }
 }
 
 @media (min-width: 769px) {
   .drag-handle { display: none; }
   #map { left: 400px; }
   .trip-bar { left: 400px; }
+
+  /* Sidebar toggle button */
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 400px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 11;
+    width: 20px;
+    height: 48px;
+    background: white;
+    border: 1px solid var(--sand);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    font-size: 0.65rem;
+    color: var(--stone);
+    padding: 0;
+    font-family: inherit;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-toggle:hover {
+    color: var(--forest);
+    background: var(--paper);
+  }
+
+  /* Sidebar, map, trip-bar transitions */
+  .sidebar { transition: width 0.3s ease, opacity 0.3s ease; }
+  #map { transition: left 0.3s ease; }
+  .trip-bar { transition: left 0.3s ease; }
+
+  /* Collapsed state */
+  body.sidebar-collapsed .sidebar {
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  body.sidebar-collapsed #map { left: 0 !important; }
+  body.sidebar-collapsed .trip-bar { left: 0 !important; }
+
+  body.sidebar-collapsed .sidebar-toggle {
+    left: 0;
+  }
 }
 </style>
 </head>
 <body>
 
 <div id="map"></div>
+
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
 
 <div class="sidebar" id="sidebar">
   <div class="drag-handle" id="dragHandle"></div>
@@ -822,6 +1188,45 @@ const ARC_COLORS = {
   flight: '#8b5cf6',
   selected: '#1a1a1a',
 };
+
+// ─── DEAL HUBS (cities that typically have camper deals) ───
+const DEAL_HUBS = [
+  'munich','berlin','hamburg','frankfurt','stuttgart','cologne','nuremberg','freiburg',
+  'barcelona','madrid','seville','valencia','malaga','bilbao',
+  'paris','lyon','marseille','nice','bordeaux','toulouse','nantes','montpellier',
+  'lisbon','porto',
+  'london','edinburgh','manchester','dublin',
+  'milan','rome','florence','venice','bologna',
+  'vienna','salzburg','zurich','geneva',
+  'prague','budapest','warsaw','krakow',
+  'copenhagen','stockholm','oslo','helsinki','gothenburg',
+  'amsterdam','brussels','antwerp',
+];
+
+// ─── HAVERSINE DISTANCE (km) ───
+function haversineDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng/2) * Math.sin(dLng/2);
+  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
+// ─── FIND NEAREST HUBS WITH DISTANCE ───
+function findNearbyHubs(city, count = 5) {
+  const coords = CITY_COORDS[city];
+  if (!coords) return [];
+  return DEAL_HUBS
+    .filter(h => h !== city && CITY_COORDS[h])
+    .map(h => ({
+      city: h,
+      distance: haversineDistance(coords.lat, coords.lng, CITY_COORDS[h].lat, CITY_COORDS[h].lng),
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, count);
+}
 
 // ─── STATE ───
 let map;
@@ -1000,22 +1405,107 @@ async function selectCity(city) {
 function renderDeals(fromCity, deals) {
   const content = document.getElementById('sidebarContent');
 
+  // ── NO DEALS: Smart nearby hub discovery ──
   if (deals.length === 0) {
-    content.innerHTML = renderCityCard(fromCity) + `
-      <div class="sidebar-empty">
-        <h3>No camper deals from ${displayCity(fromCity)} right now</h3>
-        <p>Deals change daily. Try a hub city with more inventory:</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;">
-          ${['munich','berlin','barcelona','nantes','lisbon','london'].filter(c => c !== fromCity).slice(0,5).map(c =>
-            `<button class="transport-btn" onclick="pickCity('${c}')">${displayCity(c)}</button>`
-          ).join('')}
-        </div>
+    const nearbyHubs = findNearbyHubs(fromCity, 5);
+    const fromCoords = CITY_COORDS[fromCity];
+    const fromDisplay = displayCity(fromCity);
+
+    // Draw dashed arcs + markers for each nearby hub on the map
+    nearbyHubs.forEach(hub => {
+      const hCoords = CITY_COORDS[hub.city];
+      if (!hCoords) return;
+
+      // Dashed arc from search city to hub
+      const arcPoints = generateArcPoints(fromCoords, hCoords, 30);
+      const arc = L.polyline(arcPoints, {
+        color: '#94a3b8',
+        weight: 1.5,
+        opacity: 0.35,
+        dashArray: '8,6',
+        smoothFactor: 1,
+      });
+      arc.on('click', () => pickCity(hub.city));
+      arcLayers.addLayer(arc);
+
+      // Clickable hub marker
+      const marker = L.marker([hCoords.lat, hCoords.lng], {
+        icon: L.divIcon({
+          className: '',
+          html: `<div class="nearby-marker">${displayCity(hub.city)}<br><small>${hub.distance} km</small></div>`,
+          iconAnchor: [45, 15],
+        }),
+      });
+      marker.on('click', () => pickCity(hub.city));
+      markerLayers.addLayer(marker);
+    });
+
+    // Fit map to show origin + nearby hubs
+    if (nearbyHubs.length > 0) {
+      const bounds = L.latLngBounds([[fromCoords.lat, fromCoords.lng]]);
+      nearbyHubs.forEach(h => {
+        const c = CITY_COORDS[h.city];
+        if (c) bounds.extend([c.lat, c.lng]);
+      });
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 7, duration: 1 });
+    }
+
+    // Sidebar: no-deals hero + nearby hub cards
+    content.innerHTML = `
+      <div class="no-deals-hero">
+        <h3>No camper deals from ${fromDisplay} right now</h3>
+        <p>Deals change daily — but here are the nearest cities where you can start a camper trip. We can help you get there too!</p>
+      </div>
+      <div class="nearby-hubs">
+        ${nearbyHubs.map(hub => {
+          const hd = displayCity(hub.city);
+          return `
+            <div class="nearby-hub" data-hub="${hub.city}">
+              <div class="nearby-hub-info">
+                <div class="nearby-hub-name">${hd}</div>
+                <div class="nearby-hub-distance">${hub.distance} km from ${fromDisplay}</div>
+                <div class="nearby-hub-status" id="hub-status-${hub.city}">Checking availability...</div>
+              </div>
+              <div class="nearby-hub-actions">
+                <button class="btn-add-trip" onclick="pickCity('${hub.city}')">Search deals</button>
+                <div class="nearby-hub-transport">
+                  <a href="${AFFILIATE_LINKS.trainline(fromDisplay, hd)}" target="_blank" rel="noopener" class="transport-btn" title="Train to ${hd}">🚆</a>
+                  <a href="${AFFILIATE_LINKS.flixbus(fromDisplay, hd)}" target="_blank" rel="noopener" class="transport-btn" title="Bus to ${hd}">🚌</a>
+                  <a href="${AFFILIATE_LINKS.kiwi(fromDisplay, hd)}" target="_blank" rel="noopener" class="transport-btn" title="Flight to ${hd}">✈️</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
       </div>
     `;
+
+    // Async: check deal availability for top 3 nearest hubs
+    nearbyHubs.slice(0, 3).forEach(async hub => {
+      try {
+        const res = await fetch('https://www.movacamper.com/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: hub.city, radius: 50 }),
+        });
+        const data = await res.json();
+        const count = (data.deals || []).length;
+        const el = document.getElementById(`hub-status-${hub.city}`);
+        if (el) {
+          el.innerHTML = count > 0
+            ? `<span style="color:var(--forest);font-weight:600">✓ ${count} deal${count !== 1 ? 's' : ''} available</span>`
+            : `<span style="color:var(--stone)">No deals right now</span>`;
+        }
+      } catch(e) {
+        const el = document.getElementById(`hub-status-${hub.city}`);
+        if (el) el.innerHTML = `<span style="color:var(--stone)">—</span>`;
+      }
+    });
+
     return;
   }
 
-  // Group deals by destination
+  // ── DEALS FOUND: Group by destination, draw arcs ──
   const groups = {};
   deals.forEach(d => {
     const to = (d.to || 'unknown').toLowerCase().trim().replace(/\s+/g, '-');
@@ -1089,7 +1579,7 @@ function renderDeals(fromCity, deals) {
     markerLayers.addLayer(marker);
   });
 
-  // Render sidebar deal groups
+  // Render sidebar deal groups (no city card at top — that comes after adding a leg)
   let html = '';
   const sortedGroups = Object.entries(groups).sort((a, b) => b[1].length - a[1].length);
 
@@ -1115,9 +1605,6 @@ function renderDeals(fromCity, deals) {
       </div>
     `;
   });
-
-  // Always show city card at top — explore the city you're searching from
-  html = renderCityCard(fromCity) + html;
 
   content.innerHTML = html;
 }
@@ -1164,7 +1651,7 @@ function renderCityCard(city) {
   return `
     <div class="city-card" id="cityCard">
       <div class="city-card-header">
-        <h3>Arrived in ${c}</h3>
+        <h3>${c}</h3>
       </div>
       <div class="city-card-tabs">
         <button class="city-card-tab active" onclick="switchCityTab('continue')">Continue</button>
@@ -1174,7 +1661,7 @@ function renderCityCard(city) {
 
       <div class="city-card-panel active" id="panel-continue">
         <p style="font-size:0.82rem;color:var(--stone);margin-bottom:8px;">Search for camper deals from ${c} to continue your trip.</p>
-        <button class="btn-add-trip" style="width:100%" onclick="pickCity('${city}')">Search deals from ${c}</button>
+        <button class="btn-add-trip" style="width:100%" onclick="continueFromCity('${city}')">Search deals from ${c}</button>
       </div>
 
       <div class="city-card-panel" id="panel-stay">
@@ -1302,12 +1789,76 @@ function addToTrip(deal) {
   renderTripBar();
   renderTripPath();
 
-  // Continue from destination — shows city card + deals
+  // Show "What's next?" card instead of auto-continuing
   const destCity = resolveCity((deal.to || '').toLowerCase().trim());
   if (destCity) {
-    searchInput.value = displayCity(destCity);
-    selectCity(destCity);
+    showWhatsNext(deal, destCity);
   }
+}
+
+// ─── WHAT'S NEXT: post-leg interactive choice ───
+function showWhatsNext(deal, destCity) {
+  const dc = displayCity(destCity);
+  const from = displayCity(deal.from || currentCity);
+  const content = document.getElementById('sidebarContent');
+
+  // Pan map to destination
+  if (CITY_COORDS[destCity]) {
+    map.flyTo([CITY_COORDS[destCity].lat, CITY_COORDS[destCity].lng], 6, { duration: 1 });
+  }
+
+  content.innerHTML = `
+    <div class="whats-next">
+      <div class="whats-next-header">
+        <div class="whats-next-check">✓</div>
+        <div>
+          <div class="whats-next-title">Leg added!</div>
+          <div class="whats-next-subtitle">${from} → ${dc}${deal.price ? ' · ' + deal.price : ''}${deal.date_range ? ' · ' + deal.date_range : ''}</div>
+        </div>
+      </div>
+      <p class="whats-next-prompt">What would you like to do next?</p>
+      <div class="whats-next-options">
+        <button class="whats-next-option" onclick="continueFromCity('${destCity}')">
+          <span class="whats-next-icon">🚐</span>
+          <span class="whats-next-text">
+            <strong>Continue from ${dc}</strong>
+            <span>Search new camper deals from here</span>
+          </span>
+        </button>
+        <button class="whats-next-option" onclick="showStayOption('${destCity}')">
+          <span class="whats-next-icon">🏨</span>
+          <span class="whats-next-text">
+            <strong>Stay in ${dc}</strong>
+            <span>Add hotel nights to your trip</span>
+          </span>
+        </button>
+        <button class="whats-next-option" onclick="showExploreOption('${destCity}')">
+          <span class="whats-next-icon">🎫</span>
+          <span class="whats-next-text">
+            <strong>Explore ${dc}</strong>
+            <span>Tours, restaurants, activities</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function continueFromCity(city) {
+  searchInput.value = displayCity(city);
+  selectCity(city);
+}
+
+function showStayOption(city) {
+  const content = document.getElementById('sidebarContent');
+  content.innerHTML = renderCityCard(city);
+  switchCityTab('stay');
+}
+
+function showExploreOption(city) {
+  const content = document.getElementById('sidebarContent');
+  content.innerHTML = renderCityCard(city);
+  switchCityTab('explore');
 }
 
 function addStayToTrip(city) {
@@ -1322,8 +1873,37 @@ function addStayToTrip(city) {
   saveTrip();
   renderTripBar();
 
-  // After adding a stay, switch to Continue tab
-  switchCityTab('continue');
+  // After adding a stay, show what's-next-like options for the same city
+  const dc = displayCity(city);
+  const content = document.getElementById('sidebarContent');
+  content.innerHTML = `
+    <div class="whats-next">
+      <div class="whats-next-header">
+        <div class="whats-next-check">✓</div>
+        <div>
+          <div class="whats-next-title">${nights} night${nights !== 1 ? 's' : ''} in ${dc} added!</div>
+          <div class="whats-next-subtitle">Your trip now includes a stay in ${dc}</div>
+        </div>
+      </div>
+      <p class="whats-next-prompt">Ready to continue?</p>
+      <div class="whats-next-options">
+        <button class="whats-next-option" onclick="continueFromCity('${city}')">
+          <span class="whats-next-icon">🚐</span>
+          <span class="whats-next-text">
+            <strong>Continue from ${dc}</strong>
+            <span>Search camper deals from here</span>
+          </span>
+        </button>
+        <button class="whats-next-option" onclick="showExploreOption('${city}')">
+          <span class="whats-next-icon">🎫</span>
+          <span class="whats-next-text">
+            <strong>Explore ${dc}</strong>
+            <span>Tours, restaurants, activities</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  `;
 }
 
 function saveTrip() {
@@ -1344,39 +1924,96 @@ function clearTrip() {
   tripPathLayers.clearLayers();
 }
 
+// ─── TRIP BAR (with clickable legs) ───
 function renderTripBar() {
   const bar = document.getElementById('tripBar');
   if (tripLegs.length === 0) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
 
-  // Build trip chain with stays
   let html = '';
-  const camperLegs = tripLegs.filter(l => l.type !== 'stay');
-  const totalStayNights = tripLegs.filter(l => l.type === 'stay').reduce((s, l) => s + (l.nights || 0), 0);
-
   tripLegs.forEach((leg, i) => {
     if (i === 0 && leg.type !== 'stay') {
       html += `<span class="trip-bar-city">${displayCity(leg.from)}</span>`;
     }
     if (leg.type === 'stay') {
-      html += `<span class="trip-bar-stay">${leg.nights}n</span>`;
+      html += `<span class="trip-bar-stay trip-bar-clickable" onclick="showLegPopup(event, ${i})" title="Click to manage">${leg.nights}n</span>`;
     } else {
       html += `<span class="trip-bar-arrow">→</span>`;
-      html += `<span class="trip-bar-city">${displayCity(leg.to)}</span>`;
+      html += `<span class="trip-bar-city trip-bar-clickable" onclick="showLegPopup(event, ${i})" title="Click to manage">${displayCity(leg.to)}</span>`;
     }
   });
 
   document.getElementById('tripBarLegs').innerHTML = html;
 
+  const camperLegs = tripLegs.filter(l => l.type !== 'stay');
+  const totalStayNights = tripLegs.filter(l => l.type === 'stay').reduce((s, l) => s + (l.nights || 0), 0);
   const parts = [];
   if (camperLegs.length > 0) parts.push(`${camperLegs.length} leg${camperLegs.length !== 1 ? 's' : ''}`);
   if (totalStayNights > 0) parts.push(`${totalStayNights} night${totalStayNights !== 1 ? 's' : ''}`);
   document.getElementById('tripBarSummary').textContent = parts.join(' · ');
 }
 
+// ─── LEG POPUP (click to view details / remove) ───
+function showLegPopup(event, index) {
+  event.stopPropagation();
+
+  // Remove any existing popup
+  document.querySelectorAll('.leg-popup').forEach(p => p.remove());
+
+  const leg = tripLegs[index];
+  const popup = document.createElement('div');
+  popup.className = 'leg-popup';
+
+  if (leg.type === 'stay') {
+    popup.innerHTML = `
+      <div class="leg-popup-title">Stay in ${displayCity(leg.city)}</div>
+      <div class="leg-popup-detail">${leg.nights} night${leg.nights !== 1 ? 's' : ''}</div>
+      <div class="leg-popup-actions">
+        <button onclick="removeLeg(${index})" class="leg-popup-remove">Remove</button>
+      </div>
+    `;
+  } else {
+    popup.innerHTML = `
+      <div class="leg-popup-title">${displayCity(leg.from)} → ${displayCity(leg.to)}</div>
+      <div class="leg-popup-detail">${[leg.price, leg.date_range, leg.provider].filter(Boolean).join(' · ')}</div>
+      <div class="leg-popup-actions">
+        ${leg.url ? `<a href="${leg.url}" target="_blank" rel="noopener" class="leg-popup-book">Book →</a>` : ''}
+        <button onclick="removeLeg(${index})" class="leg-popup-remove">Remove</button>
+      </div>
+    `;
+  }
+
+  // Position above the clicked element
+  const rect = event.target.getBoundingClientRect();
+  popup.style.left = Math.max(10, Math.min(rect.left, window.innerWidth - 280)) + 'px';
+  popup.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+
+  document.body.appendChild(popup);
+
+  // Close on click outside
+  setTimeout(() => {
+    const closeHandler = (e) => {
+      if (!popup.contains(e.target)) {
+        popup.remove();
+        document.removeEventListener('click', closeHandler);
+      }
+    };
+    document.addEventListener('click', closeHandler);
+  }, 10);
+}
+
+function removeLeg(index) {
+  tripLegs.splice(index, 1);
+  saveTrip();
+  renderTripBar();
+  renderTripPath();
+  document.querySelectorAll('.leg-popup').forEach(p => p.remove());
+}
+
 function renderTripPath() {
   tripPathLayers.clearLayers();
   tripLegs.forEach(leg => {
+    if (leg.type === 'stay') return;
     const fromKey = resolveCity((leg.from || '').toLowerCase().trim());
     const toKey = resolveCity((leg.to || '').toLowerCase().trim());
     if (!fromKey || !toKey || !CITY_COORDS[fromKey] || !CITY_COORDS[toKey]) return;
@@ -1407,6 +2044,21 @@ function shareTrip() {
   }).catch(() => {
     prompt('Copy this link:', url);
   });
+}
+
+// ─── SIDEBAR TOGGLE (desktop: expand/collapse sidebar to give more map space) ───
+function toggleSidebar() {
+  const toggle = document.getElementById('sidebarToggle');
+  document.body.classList.toggle('sidebar-collapsed');
+  if (document.body.classList.contains('sidebar-collapsed')) {
+    toggle.textContent = '▶';
+    toggle.title = 'Show sidebar';
+  } else {
+    toggle.textContent = '◀';
+    toggle.title = 'Hide sidebar';
+  }
+  // Invalidate map size after CSS transition
+  setTimeout(() => map.invalidateSize(), 350);
 }
 
 // ─── MOBILE DRAG HANDLE ───
