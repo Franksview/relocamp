@@ -319,6 +319,177 @@ body {
   color: var(--sky);
 }
 
+/* ─── CITY CARD (arrival exploration) ─── */
+.city-card {
+  border-top: 2px solid var(--sand);
+  background: var(--paper);
+}
+
+.city-card-header {
+  padding: 14px 20px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.city-card-header h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--ink);
+  flex: 1;
+}
+
+.city-card-tabs {
+  display: flex;
+  padding: 0 20px;
+  gap: 0;
+  border-bottom: 1px solid var(--sand);
+}
+
+.city-card-tab {
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: none;
+  background: none;
+  color: var(--stone);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition);
+}
+
+.city-card-tab:hover { color: var(--ink-light); }
+
+.city-card-tab.active {
+  color: var(--forest);
+  border-bottom-color: var(--forest);
+}
+
+.city-card-panel {
+  display: none;
+  padding: 14px 20px;
+}
+
+.city-card-panel.active { display: block; }
+
+/* Stay section */
+.stay-nights {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stay-nights label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-light);
+}
+
+.stay-nights-input {
+  width: 60px;
+  padding: 6px 10px;
+  border: 2px solid var(--sand);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  text-align: center;
+  outline: none;
+}
+
+.stay-nights-input:focus { border-color: var(--forest); }
+
+.btn-add-stay {
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--rust);
+  color: white;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.btn-add-stay:hover { background: var(--rust-hover); }
+
+.stay-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.stay-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius-sm);
+  background: white;
+  text-decoration: none;
+  color: var(--ink-light);
+  font-size: 0.82rem;
+  transition: all var(--transition);
+}
+
+.stay-link:hover {
+  border-color: var(--forest);
+  color: var(--forest);
+}
+
+.stay-link-icon { font-size: 1.1rem; flex-shrink: 0; }
+.stay-link-text { flex: 1; }
+.stay-link-label { font-weight: 600; display: block; }
+.stay-link-desc { font-size: 0.72rem; color: var(--stone); }
+
+/* Explore section */
+.explore-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.explore-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius-sm);
+  background: white;
+  text-decoration: none;
+  color: var(--ink-light);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all var(--transition);
+}
+
+.explore-link:hover {
+  border-color: var(--forest);
+  color: var(--forest);
+  box-shadow: var(--shadow);
+}
+
+.explore-link-icon { font-size: 1.4rem; }
+
+/* Trip bar stay segment */
+.trip-bar-stay {
+  white-space: nowrap;
+  color: var(--rust);
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(196, 112, 75, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
 /* ─── TRIP BAR (bottom) ─── */
 .trip-bar {
   position: absolute;
@@ -629,11 +800,18 @@ const CITY_ALIASES = {
 
 // ─── AFFILIATE LINKS ───
 const AFFILIATE_LINKS = {
+  // Transport
   trainline: (from, to) => `https://www.thetrainline.com/book/results?origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}`,
   flixbus: (from, to) => `https://global.flixbus.com/bus-routes/bus-${from.toLowerCase().replace(/\s+/g,'-')}-${to.toLowerCase().replace(/\s+/g,'-')}`,
   kiwi: (from, to) => `https://www.kiwi.com/en/search/results/${encodeURIComponent(from.toLowerCase())}/${encodeURIComponent(to.toLowerCase())}/anytime/no-return`,
+  // Accommodation
   booking: (city) => `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}`,
   hostelworld: (city) => `https://www.hostelworld.com/st/hostels/${encodeURIComponent(city.toLowerCase().replace(/\s+/g,'-'))}/`,
+  airbnb: (city) => `https://www.airbnb.com/s/${encodeURIComponent(city)}/homes`,
+  // Activities
+  getyourguide: (city) => `https://www.getyourguide.com/s/?q=${encodeURIComponent(city)}`,
+  tripadvisor: (city) => `https://www.tripadvisor.com/Search?q=${encodeURIComponent(city)}`,
+  googlemaps: (city, query) => `https://www.google.com/maps/search/${encodeURIComponent(query + ' ' + city)}`,
 };
 
 // ─── ARC COLORS ───
@@ -684,7 +862,10 @@ function initMap() {
   if (params.get('trip')) {
     try {
       const tripData = JSON.parse(atob(params.get('trip')));
-      tripLegs = tripData;
+      tripLegs = tripData.map(l => l.tp === 's'
+        ? { type: 'stay', city: l.c, from: l.c, to: l.c, nights: l.n }
+        : { type: 'camper', from: l.f, to: l.t, date_range: l.d, price: l.p, vehicle: l.v, provider: l.pr, url: l.u }
+      );
       saveTrip();
       renderTripBar();
       renderTripPath();
@@ -930,8 +1111,8 @@ function renderDeals(fromCity, deals) {
     `;
   });
 
-  // Transport options (if available)
-  html += renderTransportSection(fromCity);
+  // Always show city card at top — explore the city you're searching from
+  html = renderCityCard(fromCity) + html;
 
   content.innerHTML = html;
 }
@@ -957,19 +1138,109 @@ function renderDealCard(deal, from, to, index) {
   `;
 }
 
-function renderTransportSection(city) {
-  const c = displayCity(city);
+function renderTransportSection(fromCity, toCity) {
+  if (!toCity) return '';
+  const from = displayCity(fromCity);
+  const to = displayCity(toCity);
   return `
     <div class="transport-section">
-      <div class="transport-title">Also from ${c}</div>
+      <div class="transport-title">Other ways to ${to}</div>
       <div class="transport-options">
-        <a href="${AFFILIATE_LINKS.trainline(c, '')}" target="_blank" rel="noopener" class="transport-btn">🚆 Train</a>
-        <a href="${AFFILIATE_LINKS.flixbus(c, '')}" target="_blank" rel="noopener" class="transport-btn">🚌 FlixBus</a>
-        <a href="${AFFILIATE_LINKS.kiwi(c, '')}" target="_blank" rel="noopener" class="transport-btn">✈️ Fly</a>
-        <a href="${AFFILIATE_LINKS.booking(c)}" target="_blank" rel="noopener" class="transport-btn">🏨 Stay here</a>
+        <a href="${AFFILIATE_LINKS.trainline(from, to)}" target="_blank" rel="noopener" class="transport-btn">🚆 Train</a>
+        <a href="${AFFILIATE_LINKS.flixbus(from, to)}" target="_blank" rel="noopener" class="transport-btn">🚌 FlixBus</a>
+        <a href="${AFFILIATE_LINKS.kiwi(from, to)}" target="_blank" rel="noopener" class="transport-btn">✈️ Flight</a>
       </div>
     </div>
   `;
+}
+
+function renderCityCard(city) {
+  const c = displayCity(city);
+  return `
+    <div class="city-card" id="cityCard">
+      <div class="city-card-header">
+        <h3>Arrived in ${c}</h3>
+      </div>
+      <div class="city-card-tabs">
+        <button class="city-card-tab active" onclick="switchCityTab('continue')">Continue</button>
+        <button class="city-card-tab" onclick="switchCityTab('stay')">Stay</button>
+        <button class="city-card-tab" onclick="switchCityTab('explore')">Explore</button>
+      </div>
+
+      <div class="city-card-panel active" id="panel-continue">
+        <p style="font-size:0.82rem;color:var(--stone);margin-bottom:8px;">Search for camper deals from ${c} to continue your trip.</p>
+        <button class="btn-add-trip" style="width:100%" onclick="pickCity('${city}')">Search deals from ${c}</button>
+      </div>
+
+      <div class="city-card-panel" id="panel-stay">
+        <div class="stay-nights">
+          <label>Stay for</label>
+          <input type="number" class="stay-nights-input" id="stayNightsInput" value="2" min="1" max="30">
+          <label>nights</label>
+          <button class="btn-add-stay" onclick="addStayToTrip('${city}')">+ Add to trip</button>
+        </div>
+        <div class="stay-options">
+          <a href="${AFFILIATE_LINKS.booking(c)}" target="_blank" rel="noopener" class="stay-link">
+            <span class="stay-link-icon">🏨</span>
+            <span class="stay-link-text">
+              <span class="stay-link-label">Hotels</span>
+              <span class="stay-link-desc">Booking.com — best price guarantee</span>
+            </span>
+          </a>
+          <a href="${AFFILIATE_LINKS.hostelworld(c)}" target="_blank" rel="noopener" class="stay-link">
+            <span class="stay-link-icon">🛏️</span>
+            <span class="stay-link-text">
+              <span class="stay-link-label">Hostels</span>
+              <span class="stay-link-desc">Hostelworld — budget-friendly</span>
+            </span>
+          </a>
+          <a href="${AFFILIATE_LINKS.airbnb(c)}" target="_blank" rel="noopener" class="stay-link">
+            <span class="stay-link-icon">🏠</span>
+            <span class="stay-link-text">
+              <span class="stay-link-label">Apartments</span>
+              <span class="stay-link-desc">Airbnb — feel like a local</span>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <div class="city-card-panel" id="panel-explore">
+        <div class="explore-grid">
+          <a href="${AFFILIATE_LINKS.getyourguide(c)}" target="_blank" rel="noopener" class="explore-link">
+            <span class="explore-link-icon">🎫</span>
+            Tours & tickets
+          </a>
+          <a href="${AFFILIATE_LINKS.googlemaps(c, 'bike rental')}" target="_blank" rel="noopener" class="explore-link">
+            <span class="explore-link-icon">🚲</span>
+            Bike rental
+          </a>
+          <a href="${AFFILIATE_LINKS.googlemaps(c, 'best restaurants')}" target="_blank" rel="noopener" class="explore-link">
+            <span class="explore-link-icon">🍽️</span>
+            Restaurants
+          </a>
+          <a href="${AFFILIATE_LINKS.tripadvisor(c)}" target="_blank" rel="noopener" class="explore-link">
+            <span class="explore-link-icon">⭐</span>
+            Things to do
+          </a>
+          <a href="${AFFILIATE_LINKS.googlemaps(c, 'walking tour')}" target="_blank" rel="noopener" class="explore-link">
+            <span class="explore-link-icon">🚶</span>
+            Walking tours
+          </a>
+          <a href="${AFFILIATE_LINKS.googlemaps(c, 'coffee shops')}" target="_blank" rel="noopener" class="explore-link">
+            <span class="explore-link-icon">☕</span>
+            Coffee & bars
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function switchCityTab(tab) {
+  document.querySelectorAll('.city-card-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.city-card-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.querySelector(`[onclick="switchCityTab('${tab}')"]`).classList.add('active');
 }
 
 // ─── GROUP EXPAND/COLLAPSE ───
@@ -1013,6 +1284,7 @@ function generateArcPoints(from, to, numPoints) {
 // ─── TRIP BUILDING ───
 function addToTrip(deal) {
   tripLegs.push({
+    type: 'camper',
     from: deal.from || currentCity,
     to: deal.to,
     date_range: deal.date_range,
@@ -1025,12 +1297,28 @@ function addToTrip(deal) {
   renderTripBar();
   renderTripPath();
 
-  // Continue from destination
+  // Continue from destination — shows city card + deals
   const destCity = resolveCity((deal.to || '').toLowerCase().trim());
   if (destCity) {
     searchInput.value = displayCity(destCity);
     selectCity(destCity);
   }
+}
+
+function addStayToTrip(city) {
+  const nights = parseInt(document.getElementById('stayNightsInput').value) || 2;
+  tripLegs.push({
+    type: 'stay',
+    city: city,
+    from: city,
+    to: city,
+    nights: nights,
+  });
+  saveTrip();
+  renderTripBar();
+
+  // After adding a stay, switch to Continue tab
+  switchCityTab('continue');
 }
 
 function saveTrip() {
@@ -1056,15 +1344,29 @@ function renderTripBar() {
   if (tripLegs.length === 0) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
 
-  // Build city chain
-  const cities = [tripLegs[0].from];
-  tripLegs.forEach(l => cities.push(l.to));
+  // Build trip chain with stays
+  let html = '';
+  const camperLegs = tripLegs.filter(l => l.type !== 'stay');
+  const totalStayNights = tripLegs.filter(l => l.type === 'stay').reduce((s, l) => s + (l.nights || 0), 0);
 
-  document.getElementById('tripBarLegs').innerHTML = cities.map((c, i) =>
-    `<span class="trip-bar-city">${displayCity(c)}</span>${i < cities.length - 1 ? '<span class="trip-bar-arrow">→</span>' : ''}`
-  ).join('');
+  tripLegs.forEach((leg, i) => {
+    if (i === 0 && leg.type !== 'stay') {
+      html += `<span class="trip-bar-city">${displayCity(leg.from)}</span>`;
+    }
+    if (leg.type === 'stay') {
+      html += `<span class="trip-bar-stay">${leg.nights}n</span>`;
+    } else {
+      html += `<span class="trip-bar-arrow">→</span>`;
+      html += `<span class="trip-bar-city">${displayCity(leg.to)}</span>`;
+    }
+  });
 
-  document.getElementById('tripBarSummary').textContent = `${tripLegs.length} leg${tripLegs.length !== 1 ? 's' : ''}`;
+  document.getElementById('tripBarLegs').innerHTML = html;
+
+  const parts = [];
+  if (camperLegs.length > 0) parts.push(`${camperLegs.length} leg${camperLegs.length !== 1 ? 's' : ''}`);
+  if (totalStayNights > 0) parts.push(`${totalStayNights} night${totalStayNights !== 1 ? 's' : ''}`);
+  document.getElementById('tripBarSummary').textContent = parts.join(' · ');
 }
 
 function renderTripPath() {
@@ -1087,9 +1389,10 @@ function renderTripPath() {
 
 function shareTrip() {
   if (tripLegs.length === 0) return;
-  const minimal = tripLegs.map(l => ({
-    f: l.from, t: l.to, d: l.date_range, p: l.price, v: l.vehicle, pr: l.provider, u: l.url
-  }));
+  const minimal = tripLegs.map(l => l.type === 'stay'
+    ? { tp: 's', c: l.city, n: l.nights }
+    : { tp: 'c', f: l.from, t: l.to, d: l.date_range, p: l.price, v: l.vehicle, pr: l.provider, u: l.url }
+  );
   const encoded = btoa(JSON.stringify(minimal));
   const url = `${location.origin}/?trip=${encoded}`;
   navigator.clipboard.writeText(url).then(() => {
