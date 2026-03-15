@@ -1001,10 +1001,15 @@ function renderDeals(fromCity, deals) {
   const content = document.getElementById('sidebarContent');
 
   if (deals.length === 0) {
-    content.innerHTML = `
+    content.innerHTML = renderCityCard(fromCity) + `
       <div class="sidebar-empty">
-        <h3>No camper deals from ${displayCity(fromCity)}</h3>
-        <p>Try a nearby city like Munich, Berlin, or Amsterdam — these hubs usually have 10+ deals.</p>
+        <h3>No camper deals from ${displayCity(fromCity)} right now</h3>
+        <p>Deals change daily. Try a hub city with more inventory:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;">
+          ${['munich','berlin','barcelona','nantes','lisbon','london'].filter(c => c !== fromCity).slice(0,5).map(c =>
+            `<button class="transport-btn" onclick="pickCity('${c}')">${displayCity(c)}</button>`
+          ).join('')}
+        </div>
       </div>
     `;
     return;
