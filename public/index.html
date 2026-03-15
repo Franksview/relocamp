@@ -1230,6 +1230,18 @@ function findNearbyHubs(city, count = 5) {
     .slice(0, count);
 }
 
+// ─── ANALYTICS BEACON ───
+function trackEvent(event, data = {}) {
+  if (localStorage.getItem('relocamp_notrack')) return;
+  fetch('https://www.movacamper.com/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source: 'relocamp', page: '/', referrer: document.referrer, event, ...data }),
+  }).catch(() => {});
+}
+// Track pageview on load
+trackEvent('pageview');
+
 // ─── STATE ───
 let map;
 let currentCity = null;
@@ -1360,6 +1372,7 @@ function pickCity(city) {
 async function selectCity(city) {
   if (!city || !CITY_COORDS[city]) return;
   currentCity = city;
+  trackEvent('search', { city });
   const coords = CITY_COORDS[city];
 
   // Clear previous arcs and markers
@@ -1777,6 +1790,7 @@ function generateArcPoints(from, to, numPoints) {
 
 // ─── TRIP BUILDING ───
 function addToTrip(deal) {
+  trackEvent('trip_add', { city: deal.to });
   tripLegs.push({
     type: 'camper',
     from: deal.from || currentCity,
@@ -2033,6 +2047,7 @@ function renderTripPath() {
 
 function shareTrip() {
   if (tripLegs.length === 0) return;
+  trackEvent('trip_share');
   const minimal = tripLegs.map(l => l.type === 'stay'
     ? { tp: 's', c: l.city, n: l.nights }
     : { tp: 'c', f: l.from, t: l.to, d: l.date_range, p: l.price, v: l.vehicle, pr: l.provider, u: l.url }
