@@ -1,0 +1,24 @@
+# Relocamp
+
+> Interactive trip planner for campervan relocation deals across Europe
+
+Relocamp is a free web app that lets you plan multi-leg campervan relocation trips on an interactive map. Campervan rental companies need vehicles moved between cities, so they offer them to travellers for 1-5 EUR/day. Relocamp shows these deals on a map and lets you chain them into multi-leg road trips.
+
+## Features
+- Interactive map of live campervan relocation deals across Europe
+- Multi-leg trip builder — chain deals into a full road trip
+- Total cost and date calculator
+- Nearby city discovery when no direct deals exist
+- Deals from 1 EUR/day with bed, kitchen, and insurance included
+
+## How it works
+1. Enter your starting city
+2. See all available campervan relocation deals as routes on the map
+3. Pick a deal and add it to your trip
+4. Continue from your destination to find connecting deals
+5. Build a complete multi-leg road trip across Europe
+
+## Links
+- Trip Planner: https://relocamp.vercel.app
+- Deal Search: https://movacamper.com
+- Contact: hello@movacamper.com
