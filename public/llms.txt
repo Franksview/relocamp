@@ -19,6 +19,6 @@ Relocamp is a free web app that lets you plan multi-leg campervan relocation tri
 5. Build a complete multi-leg road trip across Europe
 
 ## Links
-- Trip Planner: https://www.relocamp.nl
+- Trip Planner: https://relocamp.nl
 - Deal Search: https://movacamper.com
 - Contact: hello@movacamper.com
