@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://relocamp.nl/sitemap.xml
+Sitemap: https://www.relocamp.nl/sitemap.xml
