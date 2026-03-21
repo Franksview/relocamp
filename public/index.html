@@ -1059,6 +1059,84 @@ body {
     left: 0;
   }
 }
+
+/* ─── SUBSCRIBE CTA ─── */
+.subscribe-cta {
+  padding: 16px 20px;
+  border-top: 1px solid var(--sand);
+  background: var(--paper);
+}
+
+.subscribe-cta h4 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.subscribe-cta p {
+  font-size: 0.75rem;
+  color: var(--warm);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.sub-form {
+  display: flex;
+  gap: 6px;
+}
+
+.sub-form input[type="email"] {
+  flex: 1;
+  padding: 9px 12px;
+  border: 2px solid var(--sand);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.sub-form input[type="email"]:focus {
+  border-color: var(--forest);
+}
+
+.sub-form button {
+  padding: 9px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--rust);
+  color: white;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+  white-space: nowrap;
+}
+
+.sub-form button:hover {
+  background: var(--rust-hover);
+}
+
+.sub-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sub-success {
+  display: none;
+  padding: 10px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-sm);
+  color: #065f46;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.sub-success.visible { display: block; }
 </style>
 </head>
 <body>
@@ -1082,6 +1160,15 @@ body {
       <p>Type a city name above to see all available campervan relocation deals radiating from that city on the map.</p>
       <p style="margin-top:12px;font-size:0.78rem;color:var(--warm);">Deals from €1/day &middot; Imoova &middot; Roadsurfer &middot; Indie Campers &middot; Bunk &middot; Movacar</p>
     </div>
+  </div>
+  <div class="subscribe-cta" id="subscribeCta">
+    <h4>Get deal alerts</h4>
+    <p>New deals pop up daily. Leave your email and we'll ping you when something matches.</p>
+    <form class="sub-form" id="subForm" onsubmit="handleSubscribe(event)">
+      <input type="email" id="subEmail" placeholder="your@email.com" required>
+      <button type="submit" id="subBtn">Notify me</button>
+    </form>
+    <div class="sub-success" id="subSuccess">Done! We'll let you know when deals match your search.</div>
   </div>
 </div>
 
@@ -1277,6 +1364,36 @@ function trackEvent(event, data = {}) {
 }
 // Track pageview on load
 trackEvent('pageview');
+
+// ─── SUBSCRIBE ───
+async function handleSubscribe(e) {
+  e.preventDefault();
+  const email = document.getElementById('subEmail').value.trim();
+  if (!email) return;
+  const btn = document.getElementById('subBtn');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const res = await fetch('https://www.movacamper.com/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        city: currentCity || 'any',
+        source: 'relocamp',
+      }),
+    });
+    if (res.ok) {
+      document.getElementById('subForm').style.display = 'none';
+      document.getElementById('subSuccess').classList.add('visible');
+      trackEvent('subscribe', { email: '***', city: currentCity || 'any' });
+    }
+  } catch (err) {
+    console.error('Subscribe error:', err);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Notify me';
+}
 
 // ─── STATE ───
 let map;
