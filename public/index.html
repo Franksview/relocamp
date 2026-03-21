@@ -1062,9 +1062,10 @@ body {
 
 /* ─── SUBSCRIBE CTA ─── */
 .subscribe-cta {
-  padding: 16px 20px;
-  border-top: 1px solid var(--sand);
+  padding: 20px;
+  margin: 12px 0 0;
   background: var(--paper);
+  border-radius: var(--radius-sm);
 }
 
 .subscribe-cta h4 {
@@ -1160,15 +1161,15 @@ body {
       <p>Type a city name above to see all available campervan relocation deals radiating from that city on the map.</p>
       <p style="margin-top:12px;font-size:0.78rem;color:var(--warm);">Deals from €1/day &middot; Imoova &middot; Roadsurfer &middot; Indie Campers &middot; Bunk &middot; Movacar</p>
     </div>
-  </div>
-  <div class="subscribe-cta" id="subscribeCta">
-    <h4>Get deal alerts</h4>
-    <p>New deals pop up daily. Leave your email and we'll ping you when something matches.</p>
-    <form class="sub-form" id="subForm" onsubmit="handleSubscribe(event)">
-      <input type="email" id="subEmail" placeholder="your@email.com" required>
-      <button type="submit" id="subBtn">Notify me</button>
-    </form>
-    <div class="sub-success" id="subSuccess">Done! We'll let you know when deals match your search.</div>
+    <div class="subscribe-cta" id="subscribeCta">
+      <h4>Get deal alerts</h4>
+      <p>New deals pop up daily. Leave your email and we'll ping you when something matches.</p>
+      <form class="sub-form" id="subForm" onsubmit="handleSubscribe(event)">
+        <input type="email" id="subEmail" placeholder="your@email.com" required>
+        <button type="submit" id="subBtn">Notify me</button>
+      </form>
+      <div class="sub-success" id="subSuccess">Done! We'll let you know when deals match your search.</div>
+    </div>
   </div>
 </div>
 
