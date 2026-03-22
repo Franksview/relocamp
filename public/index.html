@@ -1406,6 +1406,11 @@ let markerLayers = L.layerGroup();
 let tripPathLayers = L.layerGroup();
 let originMarker = null;
 
+// Secure deal store — avoids inline JSON in onclick attributes (XSS prevention)
+const _dealStore = [];
+function storeDeal(deal) { _dealStore.push(deal); return _dealStore.length - 1; }
+function getDeal(index) { return _dealStore[index]; }
+
 // ─── MAP INIT ───
 function initMap() {
   map = L.map('map', {
@@ -1782,6 +1787,7 @@ function renderDeals(fromCity, deals) {
 function renderDealCard(deal, from, to, index) {
   const providerBadge = deal.provider || 'Unknown';
   const nearbyNote = deal.nearby_distance ? `<span style="color:var(--sky);font-size:0.72rem;"> (${deal.nearby_distance}km from ${displayCity(deal.nearby_from || from)})</span>` : '';
+  const dealIdx = storeDeal(deal);
 
   return `
     <div class="deal-card">
@@ -1793,7 +1799,7 @@ function renderDealCard(deal, from, to, index) {
         ${deal.date_range || ''} · ${deal.seats || '?'} seats · ${deal.transmission || ''} · ${providerBadge}
       </div>
       <div class="deal-actions">
-        <button class="btn-add-trip" onclick="addToTrip(${JSON.stringify(deal).replace(/"/g, '&quot;')})">+ Add to trip</button>
+        <button class="btn-add-trip" data-deal-index="${dealIdx}">+ Add to trip</button>
         ${deal.url ? `<a href="${deal.url}" target="_blank" rel="noopener" class="btn-book">Book →</a>` : ''}
       </div>
     </div>
@@ -2254,6 +2260,15 @@ if (dragHandle) {
 
   document.addEventListener('touchend', () => { isDragging = false; });
 }
+
+// ─── Event delegation for deal buttons (XSS-safe) ───
+document.getElementById('sidebarContent').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-deal-index]');
+  if (btn) {
+    const deal = getDeal(parseInt(btn.dataset.dealIndex, 10));
+    if (deal) addToTrip(deal);
+  }
+});
 
 // ─── INIT ───
 initMap();
