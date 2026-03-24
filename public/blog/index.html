@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relocamp Blog — Campervan Relocation Tips & Guides</title>
+<meta name="description" content="Tips, guides, and inspiration for combining campervan relocations with European travel. Budget trips, city guides, and hidden gems.">
+<link rel="canonical" href="https://relocamp.nl/blog">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #3d6b5e;
+    --rust: #c4704b;
+    --rust-hover: #b5603d;
+    --sand: #f5f0e8;
+    --paper: #faf8f4;
+    --ink: #1a1a1a;
+    --ink-light: #3a3a3a;
+    --warm: #78716c;
+    --radius: 12px;
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --transition: 0.2s ease;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--sand); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; }
+  .site-nav { background: var(--paper); padding: 14px 24px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .site-nav a { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--forest); text-decoration: none; }
+  .site-nav a span { color: var(--rust); }
+  .blog-wrapper { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; }
+  h1 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 8px; color: var(--ink); }
+  .blog-intro { color: var(--warm); font-size: 0.95rem; margin-bottom: 32px; }
+  .post-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0,0,0,0.04);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all var(--transition);
+  }
+  .post-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .post-card h2 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; font-weight: 400; margin-bottom: 6px; color: var(--ink); }
+  .post-card p { color: var(--ink-light); font-size: 0.92rem; margin-bottom: 8px; }
+  .post-meta { font-size: 0.78rem; color: var(--warm); }
+  .back-home { display: inline-block; margin-top: 32px; color: var(--rust); text-decoration: none; font-weight: 500; }
+  .back-home:hover { color: var(--rust-hover); }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="/">Relo<span>camp</span></a>
+</nav>
+
+<div class="blog-wrapper">
+
+<h1>Guides & Inspiration</h1>
+<p class="blog-intro">Tips for combining campervan relocations with European travel. Budget breakdowns, city guides, and ideas for making the most of every drop-off.</p>
+
+<a href="/blog/cities-to-explore-after-campervan-dropoff" class="post-card">
+  <h2>10 European Cities Worth Exploring After a Campervan Drop-Off</h2>
+  <p>Your relocation ends — but the adventure doesn't. The best cities to land in, what to do, and how to stretch your budget.</p>
+  <div class="post-meta">March 2026 · 8 min read</div>
+</a>
+
+<a href="/blog/budget-trip-campervan-plus-transport" class="post-card">
+  <h2>How to Plan a Budget Trip: Campervan Relocation + Public Transport</h2>
+  <p>Chain a €1/day campervan with FlixBus and trains for a 10-day European trip under €600. Full breakdown and example itinerary.</p>
+  <div class="post-meta">March 2026 · 8 min read</div>
+</a>
+
+<a href="/blog/hidden-gems-dropoff-city-guide" class="post-card">
+  <h2>Hidden Gems: What to Do When Your Relocation Ends in an Unknown City</h2>
+  <p>You didn't pick the destination — the deal did. Here's how to make the most of any European drop-off city.</p>
+  <div class="post-meta">March 2026 · 7 min read</div>
+</a>
+
+<a href="/" class="back-home">&larr; Back to Relocamp</a>
+
+</div>
+
+<script>
+(function() {
+  try { if (localStorage.getItem('movacamper_notrack') === '1') return; } catch(e) {}
+  try {
+    fetch('https://www.movacamper.com/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: location.pathname, referrer: document.referrer || null, source: 'relocamp' }),
+      keepalive: true,
+    }).catch(function() {});
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
