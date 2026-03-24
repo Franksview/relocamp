@@ -1298,6 +1298,7 @@ const AFFILIATE_LINKS = {
   flixbus: (from, to) => `https://global.flixbus.com/bus-routes/bus-${from.toLowerCase().replace(/\s+/g,'-')}-${to.toLowerCase().replace(/\s+/g,'-')}`,
   kiwi: (from, to) => `https://www.kiwi.com/en/search/results/${encodeURIComponent(from.toLowerCase())}/${encodeURIComponent(to.toLowerCase())}/anytime/no-return`,
   // Accommodation
+  priceline: (city) => `https://www.jdoqocy.com/click-101710044-12090567?url=${encodeURIComponent('https://www.priceline.com/hotel-deals/' + city.toLowerCase().replace(/\s+/g, '-') + '-hotels')}`,
   booking: (city) => `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}`,
   hostelworld: (city) => `https://www.hostelworld.com/st/hostels/${encodeURIComponent(city.toLowerCase().replace(/\s+/g,'-'))}/`,
   airbnb: (city) => `https://www.airbnb.com/s/${encodeURIComponent(city)}/homes`,
@@ -1848,6 +1849,13 @@ function renderCityCard(city) {
           <button class="btn-add-stay" onclick="addStayToTrip('${city}')">+ Add to trip</button>
         </div>
         <div class="stay-options">
+          <a href="${AFFILIATE_LINKS.priceline(c)}" target="_blank" rel="noopener" class="stay-link">
+            <span class="stay-link-icon">🏨</span>
+            <span class="stay-link-text">
+              <span class="stay-link-label">Hotels — up to 60% off</span>
+              <span class="stay-link-desc">Priceline — express deals</span>
+            </span>
+          </a>
           <a href="${AFFILIATE_LINKS.booking(c)}" target="_blank" rel="noopener" class="stay-link">
             <span class="stay-link-icon">🏨</span>
             <span class="stay-link-text">
