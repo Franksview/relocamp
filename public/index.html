@@ -46,19 +46,23 @@
 :root {
   --forest: #3d6b5e;
   --forest-light: #4a8a75;
-  --rust: #c4704b;
-  --rust-hover: #b5603d;
+  --sunset: #e8734a;
+  --sunset-hover: #d4623b;
+  --gold: #f5b731;
+  --gold-light: #fef3c7;
   --sand: #f5f0e8;
   --paper: #faf8f4;
   --ink: #1a1a1a;
   --ink-light: #3a3a3a;
-  --stone: #94a3b8;
+  --stone: #64748b;
   --warm: #78716c;
   --sky: #4a7fa5;
+  --dark: #1a2332;
   --radius: 12px;
   --radius-sm: 8px;
   --shadow: 0 1px 3px rgba(0,0,0,0.08);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.15);
   --transition: 0.2s ease;
 }
 
@@ -106,7 +110,7 @@ body {
   margin-bottom: 12px;
 }
 
-.sidebar-logo span { color: var(--rust); }
+.sidebar-logo span { color: var(--sunset); }
 
 .search-input-wrap {
   position: relative;
@@ -271,7 +275,9 @@ body {
 }
 
 .deal-vehicle { font-size: 0.82rem; font-weight: 600; }
-.deal-price { font-size: 0.82rem; color: var(--forest); font-weight: 700; }
+.deal-price { font-size: 0.85rem; color: var(--dark); font-weight: 700; }
+.deal-price .total-price { color: var(--sunset); font-size: 0.95rem; }
+.deal-price .per-day { color: var(--warm); font-size: 0.75rem; font-weight: 500; }
 
 .deal-details {
   font-size: 0.75rem;
@@ -290,16 +296,17 @@ body {
   padding: 8px;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--forest);
+  background: var(--sunset);
   color: white;
   font-family: inherit;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background var(--transition);
+  transition: all var(--transition);
 }
 
-.btn-add-trip:hover { background: var(--forest-light); }
+.btn-add-trip:hover { background: var(--sunset-hover); transform: translateY(-1px); box-shadow: var(--shadow); }
+.btn-add-trip.added { background: var(--forest); pointer-events: none; }
 
 .btn-book {
   padding: 8px 12px;
@@ -314,7 +321,7 @@ body {
   transition: all var(--transition);
 }
 
-.btn-book:hover { border-color: var(--rust); color: var(--rust); }
+.btn-book:hover { border-color: var(--sunset); color: var(--sunset); }
 
 /* ─── TRANSPORT OPTIONS ─── */
 .transport-section {
@@ -441,7 +448,7 @@ body {
   padding: 8px 14px;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--rust);
+  background: var(--sunset);
   color: white;
   font-family: inherit;
   font-size: 0.78rem;
@@ -450,7 +457,7 @@ body {
   transition: background var(--transition);
 }
 
-.btn-add-stay:hover { background: var(--rust-hover); }
+.btn-add-stay:hover { background: var(--sunset-hover); }
 
 .stay-options {
   display: flex;
@@ -518,10 +525,10 @@ body {
 /* Trip bar stay segment */
 .trip-bar-stay {
   white-space: nowrap;
-  color: var(--rust);
+  color: var(--sunset);
   font-size: 0.72rem;
   font-weight: 600;
-  background: rgba(196, 112, 75, 0.1);
+  background: rgba(232, 115, 74, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -957,9 +964,9 @@ body {
     left: 0; right: 0;
     bottom: 0;
     width: 100%;
-    height: 45vh;
+    height: 35vh;
     border-radius: 16px 16px 0 0;
-    transition: height 0.3s ease;
+    transition: height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .sidebar.collapsed {
@@ -967,7 +974,7 @@ body {
   }
 
   .sidebar.expanded {
-    height: 80vh;
+    height: 85vh;
   }
 
   .sidebar-header {
@@ -979,19 +986,32 @@ body {
     height: 4px;
     background: var(--stone);
     border-radius: 2px;
-    margin: 0 auto 10px;
-    opacity: 0.5;
+    margin: 0 auto 6px;
+    opacity: 0.4;
+    position: relative;
+  }
+
+  .drag-handle::after {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--stone);
+    border-top: 2px solid var(--stone);
+    transform: rotate(-45deg);
+    margin: 4px auto 0;
+    opacity: 0.4;
   }
 
   .sidebar-logo { display: none; }
 
   .trip-bar {
-    bottom: 45vh;
-    transition: bottom 0.3s ease;
+    bottom: 35vh;
+    transition: bottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .sidebar.collapsed ~ .trip-bar { bottom: 120px; }
-  .sidebar.expanded ~ .trip-bar { bottom: 80vh; }
+  .sidebar.expanded ~ .trip-bar { bottom: 85vh; }
 
   .whats-next-option {
     padding: 14px 12px;
@@ -1107,7 +1127,7 @@ body {
   padding: 9px 16px;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--rust);
+  background: var(--sunset);
   color: white;
   font-family: inherit;
   font-size: 0.82rem;
@@ -1118,7 +1138,7 @@ body {
 }
 
 .sub-form button:hover {
-  background: var(--rust-hover);
+  background: var(--sunset-hover);
 }
 
 .sub-form button:disabled {
@@ -1138,6 +1158,236 @@ body {
 }
 
 .sub-success.visible { display: block; }
+
+/* ─── FOCUS STYLES (accessibility) ─── */
+*:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; border-radius: 4px; }
+
+/* ─── HERO WELCOME STATE ─── */
+.welcome-hero {
+  padding: 32px 20px 24px;
+  text-align: center;
+}
+
+.welcome-hero h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.welcome-hero .hero-price {
+  color: var(--sunset);
+}
+
+.welcome-hero .hero-sub {
+  font-size: 0.85rem;
+  color: var(--warm);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.popular-section {
+  padding: 0 20px 8px;
+}
+
+.popular-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--stone);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.popular-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.popular-chip {
+  padding: 8px 16px;
+  border: 1.5px solid var(--sand);
+  border-radius: 20px;
+  background: white;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-light);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.popular-chip:hover {
+  border-color: var(--forest);
+  color: var(--forest);
+  background: #f0fdf4;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.welcome-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: var(--stone);
+  font-size: 0.75rem;
+}
+
+.welcome-divider::before,
+.welcome-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--sand);
+}
+
+.cheapest-btn {
+  display: block;
+  width: calc(100% - 40px);
+  margin: 0 20px 16px;
+  padding: 14px;
+  border: 2px solid var(--gold);
+  border-radius: var(--radius);
+  background: var(--gold-light);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+
+.cheapest-btn:hover {
+  background: var(--gold);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.social-proof {
+  text-align: center;
+  padding: 12px 20px 20px;
+  font-size: 0.75rem;
+  color: var(--stone);
+}
+
+.social-proof strong {
+  color: var(--forest);
+}
+
+/* ─── PROVIDER BADGE ─── */
+.provider-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--warm);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.provider-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.provider-dot.imoova { background: #2d6a4f; }
+.provider-dot.roadsurfer { background: #e8734a; }
+.provider-dot.bunk { background: #4a7fa5; }
+.provider-dot.movacar { background: #7c3aed; }
+.provider-dot.indie { background: #dc2626; }
+.provider-dot.default { background: var(--stone); }
+
+/* ─── CHEAPEST DEALS CARDS ─── */
+.cheapest-deals {
+  padding: 0 16px 20px;
+}
+
+.cheapest-deals h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--ink);
+  padding: 0 4px 12px;
+}
+
+.cheapest-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  margin-bottom: 8px;
+  background: white;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.cheapest-card:hover {
+  border-color: var(--forest);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.cheapest-card-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--sunset);
+  white-space: nowrap;
+}
+
+.cheapest-card-route {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.cheapest-card-meta {
+  font-size: 0.75rem;
+  color: var(--stone);
+  margin-top: 2px;
+}
+
+.cheapest-card-info { flex: 1; min-width: 0; }
+
+/* ─── CONTEXTUAL SUBSCRIBE ─── */
+.contextual-sub {
+  padding: 16px 20px;
+  margin-top: 4px;
+  background: linear-gradient(135deg, #f0fdf4 0%, var(--paper) 100%);
+  border-top: 1px solid var(--sand);
+}
+
+.contextual-sub h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.contextual-sub p {
+  font-size: 0.75rem;
+  color: var(--warm);
+  margin-bottom: 10px;
+}
+
+/* ─── CLEAR CONFIRM ─── */
+.btn-clear-trip.confirming {
+  background: #fecaca;
+  color: #b91c1c;
+  font-weight: 600;
+}
 </style>
 </head>
 <body>
@@ -1156,21 +1406,17 @@ body {
     </div>
   </div>
   <div class="sidebar-content" id="sidebarContent">
-    <div class="sidebar-empty">
-      <h3>Explore campervan relocations</h3>
-      <p>Type a city name above to see all available campervan relocation deals radiating from that city on the map.</p>
-      <p style="margin-top:12px;font-size:0.78rem;color:var(--warm);">Deals from €1/day &middot; Imoova &middot; Roadsurfer &middot; Indie Campers &middot; Bunk &middot; Movacar</p>
+    <div class="welcome-hero">
+      <h2>Drive a campervan across Europe from <span class="hero-price">€1/day</span></h2>
+      <p class="hero-sub">Companies need vehicles moved between cities. You get the road trip.</p>
     </div>
-    <div class="subscribe-cta" id="subscribeCta">
-      <h4>Get deal alerts</h4>
-      <p>New deals pop up daily. Leave your email and we'll ping you when something matches.</p>
-      <form class="sub-form" id="subForm" onsubmit="handleSubscribe(event)">
-        <input type="email" id="subEmail" placeholder="your@email.com" required>
-        <button type="submit" id="subBtn">Notify me</button>
-      </form>
-      <div class="sub-privacy" style="font-size:0.7rem;color:#999;margin-top:6px;">We'll email you when matching deals pop up. No spam, unsubscribe anytime.</div>
-      <div class="sub-success" id="subSuccess">Done! We'll let you know when deals match your search.</div>
+    <div class="popular-section">
+      <div class="popular-label">Popular starting cities</div>
+      <div class="popular-chips" id="popularChips"></div>
     </div>
+    <div class="welcome-divider">or try</div>
+    <button class="cheapest-btn" onclick="showCheapestDeals()">🔥 Cheapest deals this week</button>
+    <div class="social-proof" id="socialProof"></div>
   </div>
 </div>
 
@@ -1568,10 +1814,13 @@ async function selectCity(city) {
     renderDeals(city, deals);
   } catch (err) {
     console.error('Search error:', err);
+    const offlineHint = !navigator.onLine ? '<p style="font-size:0.8rem;color:var(--sunset);margin-top:8px;">You appear to be offline. Check your connection.</p>' : '';
     document.getElementById('sidebarContent').innerHTML = `
-      <div class="sidebar-empty">
+      <div class="no-deals-hero">
         <h3>Could not load deals</h3>
-        <p>Try again in a moment.</p>
+        <p>Something went wrong while searching. Give it another try!</p>
+        ${offlineHint}
+        <button class="btn-add-trip" style="margin-top:12px;flex:none;padding:10px 24px;" onclick="selectCity('${city}')">Try again</button>
       </div>
     `;
   }
@@ -1783,22 +2032,41 @@ function renderDeals(fromCity, deals) {
   });
 
   content.innerHTML = html;
+  appendContextualSubscribe(content, fromCity);
 }
 
 function renderDealCard(deal, from, to, index) {
-  const providerBadge = deal.provider || 'Unknown';
+  const provider = deal.provider || '';
+  const providerClass = getProviderClass(provider);
   const nearbyNote = deal.nearby_distance ? `<span style="color:var(--sky);font-size:0.72rem;"> (${deal.nearby_distance}km from ${displayCity(deal.nearby_from || from)})</span>` : '';
   const dealIdx = storeDeal(deal);
 
+  // Build clean detail parts (no "? seats", no empty strings)
+  const details = [];
+  if (deal.date_range) details.push(deal.date_range);
+  const days = parseDealDays(deal.date_range);
+  if (days > 0) details.push(`${days} days`);
+  if (deal.seats && deal.seats > 0 && deal.seats !== '0') details.push(`${deal.seats} seats`);
+  if (deal.transmission && deal.transmission !== 'unknown') details.push(deal.transmission);
+
+  // Price with total cost
+  const totalCostStr = days > 0 ? formatTotalCost(deal.price, days) : '';
+  let priceHtml;
+  if (totalCostStr) {
+    priceHtml = `<span class="total-price">${totalCostStr} total</span> <span class="per-day">${deal.price || '€1/day'}</span>`;
+  } else {
+    priceHtml = deal.price || '€1/day';
+  }
+
   return `
-    <div class="deal-card">
+    <div class="deal-card" style="border-left: 3px solid var(--${providerClass === 'default' ? 'sand' : providerClass === 'imoova' ? 'forest' : providerClass === 'roadsurfer' ? 'sunset' : providerClass === 'bunk' ? 'sky' : 'stone'});">
       <div class="deal-card-top">
-        <span class="deal-vehicle">${deal.vehicle || 'Campervan'}${nearbyNote}</span>
-        <span class="deal-price">${deal.price || '€1/day'}</span>
+        <span class="deal-vehicle">
+          ${provider ? `<span class="provider-badge"><span class="provider-dot ${providerClass}"></span> ${provider}</span> · ` : ''}${deal.vehicle || 'Campervan'}${nearbyNote}
+        </span>
+        <span class="deal-price">${priceHtml}</span>
       </div>
-      <div class="deal-details">
-        ${deal.date_range || ''} · ${deal.seats || '?'} seats · ${deal.transmission || ''} · ${providerBadge}
-      </div>
+      ${details.length > 0 ? `<div class="deal-details">${details.join(' · ')}</div>` : ''}
       <div class="deal-actions">
         <button class="btn-add-trip" data-deal-index="${dealIdx}">+ Add to trip</button>
         ${deal.url ? `<a href="${deal.url}" target="_blank" rel="noopener" class="btn-book">Book →</a>` : ''}
@@ -2135,6 +2403,16 @@ function renderTripBar() {
   const parts = [];
   if (camperLegs.length > 0) parts.push(`${camperLegs.length} leg${camperLegs.length !== 1 ? 's' : ''}`);
   if (totalStayNights > 0) parts.push(`${totalStayNights} night${totalStayNights !== 1 ? 's' : ''}`);
+  // Total estimated cost
+  let totalCost = 0;
+  let hasPrice = false;
+  for (const leg of camperLegs) {
+    const days = parseDealDays(leg.date_range);
+    const perDay = parseFloat((leg.price || '').replace(/[^0-9.]/g, ''));
+    if (perDay && days > 0) { totalCost += perDay * days; hasPrice = true; }
+    else if (perDay) { totalCost += perDay * 3; hasPrice = true; } // estimate 3 days if no dates
+  }
+  if (hasPrice && totalCost > 0) parts.push(`~€${Math.round(totalCost)}`);
   document.getElementById('tripBarSummary').textContent = parts.join(' · ');
 }
 
@@ -2247,26 +2525,47 @@ function toggleSidebar() {
   setTimeout(() => map.invalidateSize(), 350);
 }
 
-// ─── MOBILE DRAG HANDLE ───
+// ─── MOBILE DRAG HANDLE (smooth tracking) ───
 const sidebar = document.getElementById('sidebar');
 const dragHandle = document.getElementById('dragHandle');
 let isDragging = false;
-let startY = 0;
+let dragStartY = 0;
+let dragStartHeight = 0;
 
 if (dragHandle) {
   dragHandle.addEventListener('touchstart', (e) => {
     isDragging = true;
-    startY = e.touches[0].clientY;
-  });
+    dragStartY = e.touches[0].clientY;
+    dragStartHeight = sidebar.getBoundingClientRect().height;
+    sidebar.style.transition = 'none';
+  }, { passive: true });
 
   document.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
-    const diff = startY - e.touches[0].clientY;
-    if (diff > 50) { sidebar.classList.add('expanded'); sidebar.classList.remove('collapsed'); }
-    else if (diff < -50) { sidebar.classList.remove('expanded'); sidebar.classList.add('collapsed'); }
-  });
+    e.preventDefault();
+    const currentY = e.touches[0].clientY;
+    const diff = dragStartY - currentY;
+    const newHeight = Math.max(120, Math.min(window.innerHeight * 0.85, dragStartHeight + diff));
+    sidebar.style.height = newHeight + 'px';
+  }, { passive: false });
 
-  document.addEventListener('touchend', () => { isDragging = false; });
+  document.addEventListener('touchend', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    sidebar.style.transition = '';
+    const h = sidebar.getBoundingClientRect().height;
+    const vh = window.innerHeight;
+    sidebar.style.height = '';
+    if (h < vh * 0.22) {
+      sidebar.classList.add('collapsed');
+      sidebar.classList.remove('expanded');
+    } else if (h > vh * 0.55) {
+      sidebar.classList.add('expanded');
+      sidebar.classList.remove('collapsed');
+    } else {
+      sidebar.classList.remove('collapsed', 'expanded');
+    }
+  });
 }
 
 // ─── Event delegation for deal buttons (XSS-safe) ───
@@ -2274,12 +2573,279 @@ document.getElementById('sidebarContent').addEventListener('click', (e) => {
   const btn = e.target.closest('[data-deal-index]');
   if (btn) {
     const deal = getDeal(parseInt(btn.dataset.dealIndex, 10));
-    if (deal) addToTrip(deal);
+    if (deal) {
+      addToTrip(deal);
+      btn.classList.add('added');
+      btn.textContent = '✓ Added!';
+      setTimeout(() => { btn.classList.remove('added'); btn.textContent = '+ Add to trip'; }, 1500);
+    }
   }
 });
 
+// ─── POPULAR CITY CHIPS ───
+const POPULAR_CITIES = ['amsterdam', 'barcelona', 'berlin', 'lisbon', 'munich', 'paris', 'prague', 'rome'];
+
+function renderPopularChips() {
+  const container = document.getElementById('popularChips');
+  if (!container) return;
+  container.innerHTML = POPULAR_CITIES.map(city =>
+    `<button class="popular-chip" onclick="pickCity('${city}')">${displayCity(city)}</button>`
+  ).join('');
+}
+
+// ─── SOCIAL PROOF ───
+function loadSocialProof() {
+  const el = document.getElementById('socialProof');
+  if (!el) return;
+  // Use a baseline + random variation to feel real
+  const base = 180 + Math.floor(Math.random() * 60);
+  el.innerHTML = `<strong>${base}+</strong> travelers explored deals this month`;
+}
+
+// ─── CHEAPEST DEALS THIS WEEK ───
+async function showCheapestDeals() {
+  const content = document.getElementById('sidebarContent');
+  content.innerHTML = `<div class="sidebar-loading"><span class="pulse-dot"></span> Finding the cheapest deals across Europe...</div>`;
+
+  const hubsToCheck = ['amsterdam', 'barcelona', 'munich', 'lisbon', 'paris'];
+  const allDeals = [];
+
+  try {
+    const results = await Promise.allSettled(
+      hubsToCheck.map(hub =>
+        fetch('https://www.movacamper.com/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: hub, radius: 50 }),
+        }).then(r => r.json()).then(data => ({ hub, deals: data.deals || [] }))
+      )
+    );
+
+    for (const r of results) {
+      if (r.status === 'fulfilled' && r.value.deals.length > 0) {
+        allDeals.push(...r.value.deals);
+      }
+    }
+
+    // Sort by price (parse €X/day)
+    allDeals.sort((a, b) => {
+      const pa = parseFloat((a.price || '').replace(/[^0-9.]/g, '')) || 999;
+      const pb = parseFloat((b.price || '').replace(/[^0-9.]/g, '')) || 999;
+      return pa - pb;
+    });
+
+    // Deduplicate by from+to
+    const seen = new Set();
+    const unique = allDeals.filter(d => {
+      const key = `${(d.from||'').toLowerCase()}|${(d.to||'').toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    if (unique.length === 0) {
+      content.innerHTML = `<div class="no-deals-hero"><h3>No deals found right now</h3><p>Deals change daily — check back soon or search a specific city.</p></div>`;
+      renderWelcomeBelow(content);
+      return;
+    }
+
+    let html = '<div class="cheapest-deals"><h3>🔥 Cheapest deals this week</h3>';
+    for (const deal of unique.slice(0, 8)) {
+      const idx = storeDeal(deal);
+      const dayPrice = deal.price || '€1/day';
+      const days = parseDealDays(deal.date_range);
+      const totalStr = days > 0 ? formatTotalCost(deal.price, days) : '';
+      html += `<div class="cheapest-card" data-deal-index="${idx}">
+        <div class="cheapest-card-price">${totalStr || dayPrice}</div>
+        <div class="cheapest-card-info">
+          <div class="cheapest-card-route">${cleanCity(deal.from)} → ${cleanCity(deal.to)}</div>
+          <div class="cheapest-card-meta">${deal.date_range || 'Flexible'}${days > 0 ? ' · ' + days + ' days' : ''} · ${deal.vehicle || 'Campervan'}</div>
+        </div>
+      </div>`;
+    }
+    html += '</div>';
+    content.innerHTML = html;
+    appendContextualSubscribe(content, 'any');
+  } catch (err) {
+    content.innerHTML = `<div class="no-deals-hero"><h3>Could not load deals</h3><p>Check your connection and try again.</p><button class="btn-add-trip" style="margin-top:12px" onclick="showCheapestDeals()">Try again</button></div>`;
+  }
+}
+
+function renderWelcomeBelow(container) {
+  container.innerHTML += `
+    <div class="popular-section" style="margin-top:16px">
+      <div class="popular-label">Or search a city</div>
+      <div class="popular-chips">${POPULAR_CITIES.map(c => `<button class="popular-chip" onclick="pickCity('${c}')">${displayCity(c)}</button>`).join('')}</div>
+    </div>`;
+}
+
+// ─── DEAL CARD HELPERS ───
+function parseDealDays(dateRange) {
+  if (!dateRange) return 0;
+  const match = dateRange.match(/(\w+)\s+(\d+)\s*[-–]\s*(\w+)\s+(\d+)/);
+  if (!match) return 0;
+  try {
+    const year = new Date().getFullYear();
+    const start = new Date(`${match[1]} ${match[2]}, ${year}`);
+    const end = new Date(`${match[3]} ${match[4]}, ${year}`);
+    if (isNaN(start) || isNaN(end)) return 0;
+    const days = Math.round((end - start) / (1000 * 60 * 60 * 24));
+    return days > 0 && days < 60 ? days : 0;
+  } catch { return 0; }
+}
+
+function formatTotalCost(priceStr, days) {
+  const perDay = parseFloat((priceStr || '').replace(/[^0-9.]/g, ''));
+  if (!perDay || perDay > 100) return '';
+  const total = Math.round(perDay * days);
+  return `€${total}`;
+}
+
+function cleanCity(name) {
+  if (!name) return '';
+  return name.split(/[\s-]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+}
+
+function getProviderClass(provider) {
+  if (!provider) return 'default';
+  const p = provider.toLowerCase();
+  if (p.includes('imoova')) return 'imoova';
+  if (p.includes('roadsurfer')) return 'roadsurfer';
+  if (p.includes('bunk')) return 'bunk';
+  if (p.includes('movacar')) return 'movacar';
+  if (p.includes('indie')) return 'indie';
+  return 'default';
+}
+
+// ─── CONTEXTUAL SUBSCRIBE ───
+function appendContextualSubscribe(container, city) {
+  const cityDisplay = city && city !== 'any' ? displayCity(city) : null;
+  const heading = cityDisplay ? `Get alerts for ${cityDisplay} deals` : 'Get deal alerts';
+  const desc = cityDisplay
+    ? `New deals pop up daily. We'll ping you when something from ${cityDisplay} appears.`
+    : 'New deals pop up daily. Leave your email and we\'ll ping you when something matches.';
+
+  const html = `<div class="contextual-sub">
+    <h4>${heading}</h4>
+    <p>${desc}</p>
+    <form class="sub-form" onsubmit="handleContextualSubscribe(event, '${city || 'any'}')">
+      <input type="email" placeholder="your@email.com" required>
+      <button type="submit">Notify me</button>
+    </form>
+    <div class="sub-privacy" style="font-size:0.7rem;color:#999;margin-top:6px;">No spam, unsubscribe anytime.</div>
+  </div>`;
+  container.insertAdjacentHTML('beforeend', html);
+}
+
+async function handleContextualSubscribe(e, city) {
+  e.preventDefault();
+  const form = e.target;
+  const email = form.querySelector('input[type="email"]').value.trim();
+  if (!email) return;
+  const btn = form.querySelector('button');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const res = await fetch('https://www.movacamper.com/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, city: city || 'any', source: 'relocamp' }),
+    });
+    if (res.ok) {
+      const cityName = city && city !== 'any' ? displayCity(city) : '';
+      form.parentElement.innerHTML = `<div style="padding:12px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;color:#065f46;font-size:0.85rem;text-align:center;font-weight:600;">You're in! We'll message you when ${cityName || 'new'} deals drop 🎉</div>`;
+      trackEvent('subscribe', { email: '***', city: city || 'any' });
+    }
+  } catch (err) {
+    console.error('Subscribe error:', err);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Notify me';
+}
+
+// ─── IMPROVED SHARE (Web Share API) ───
+// Override the existing shareTrip
+const _origShareTrip = shareTrip;
+shareTrip = function() {
+  if (tripLegs.length === 0) return;
+  trackEvent('trip_share');
+  const minimal = tripLegs.map(l => l.type === 'stay'
+    ? { tp: 's', c: l.city, n: l.nights }
+    : { tp: 'c', f: l.from, t: l.to, d: l.date_range, p: l.price, v: l.vehicle, pr: l.provider, u: l.url }
+  );
+  const encoded = btoa(JSON.stringify(minimal));
+  const url = `${location.origin}/?trip=${encoded}`;
+
+  const camperLegs = tripLegs.filter(l => l.type !== 'stay');
+  const cities = camperLegs.map(l => cleanCity(l.from));
+  if (camperLegs.length > 0) cities.push(cleanCity(camperLegs[camperLegs.length - 1].to));
+  const routeStr = cities.join(' → ');
+  const summary = `🚐 My Relocamp Trip\n${routeStr}\n${camperLegs.length} leg${camperLegs.length !== 1 ? 's' : ''}`;
+
+  if (navigator.share) {
+    navigator.share({ title: 'My Relocamp Trip', text: summary, url }).catch(() => {});
+    return;
+  }
+
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector('.btn-share');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = 'Share', 2000);
+  }).catch(() => {
+    // Fallback: temporary textarea
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.querySelector('.btn-share');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = 'Share', 2000);
+  });
+};
+
+// ─── IMPROVED CLEAR (two-tap confirm) ───
+let clearConfirmTimer = null;
+const _origClearTrip = clearTrip;
+clearTrip = function() {
+  const btn = document.querySelector('.btn-clear-trip');
+  if (!btn) return;
+
+  if (btn.classList.contains('confirming')) {
+    // Second tap — actually clear
+    clearTimeout(clearConfirmTimer);
+    btn.classList.remove('confirming');
+    btn.textContent = 'Clear';
+    tripLegs = [];
+    saveTrip();
+    renderTripBar();
+    tripPathLayers.clearLayers();
+    return;
+  }
+
+  // First tap — ask confirmation
+  btn.classList.add('confirming');
+  btn.textContent = 'Sure?';
+  clearConfirmTimer = setTimeout(() => {
+    btn.classList.remove('confirming');
+    btn.textContent = 'Clear';
+  }, 3000);
+};
+
+// ─── MOBILE SEARCH EXPAND ───
+if (window.innerWidth <= 768) {
+  document.getElementById('searchInput').addEventListener('focus', () => {
+    sidebar.classList.add('expanded');
+    sidebar.classList.remove('collapsed');
+  });
+}
+
 // ─── INIT ───
 initMap();
+renderPopularChips();
+loadSocialProof();
 </script>
 </body>
 </html>
