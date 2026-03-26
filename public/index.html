@@ -1885,15 +1885,15 @@ function renderDeals(fromCity, deals) {
         ${nearbyHubs.map(hub => {
           const hd = displayCity(hub.city);
           return `
-            <div class="nearby-hub" data-hub="${hub.city}">
+            <div class="nearby-hub" data-hub="${hub.city}" onclick="pickCity('${hub.city}')" style="cursor:pointer;">
               <div class="nearby-hub-info">
                 <div class="nearby-hub-name">${hd}</div>
                 <div class="nearby-hub-distance">${hub.distance} km from ${fromDisplay}</div>
                 <div class="nearby-hub-status" id="hub-status-${hub.city}">Checking availability...</div>
               </div>
               <div class="nearby-hub-actions">
-                <button class="btn-add-trip" onclick="pickCity('${hub.city}')">Search deals</button>
-                <div class="nearby-hub-transport">
+                <button class="btn-add-trip" onclick="event.stopPropagation(); pickCity('${hub.city}')">Search deals</button>
+                <div class="nearby-hub-transport" onclick="event.stopPropagation()">
                   <a href="${AFFILIATE_LINKS.trainline(fromDisplay, hd)}" target="_blank" rel="noopener" class="transport-btn" title="Train to ${hd}">🚆</a>
                   <a href="${AFFILIATE_LINKS.flixbus(fromDisplay, hd)}" target="_blank" rel="noopener" class="transport-btn" title="Bus to ${hd}">🚌</a>
                   <a href="${AFFILIATE_LINKS.kiwi(fromDisplay, hd)}" target="_blank" rel="noopener" class="transport-btn" title="Flight to ${hd}">✈️</a>
