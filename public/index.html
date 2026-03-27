@@ -971,14 +971,14 @@ body {
 
 .origin-marker {
   font-family: 'Inter', -apple-system, sans-serif;
-  background: var(--ink);
-  color: white;
-  font-size: 0.82rem;
+  background: white;
+  color: var(--forest);
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 6px 14px;
-  border-radius: 14px;
-  border: 2.5px solid white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--forest);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
   white-space: nowrap;
   letter-spacing: 0.01em;
   position: relative;
@@ -990,11 +990,10 @@ body {
   bottom: -5px;
   left: 50%;
   transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid var(--ink);
+  width: 6px;
+  height: 6px;
+  background: var(--forest);
+  border-radius: 50%;
 }
 
 /* ─── MOBILE ─── */
