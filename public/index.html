@@ -934,43 +934,39 @@ body {
 .dest-marker {
   font-family: 'Inter', -apple-system, sans-serif;
   font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--ink-light);
-  background: white;
-  padding: 4px 10px;
-  border-radius: 10px;
-  border: 1.5px solid var(--sand);
-  box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+  font-weight: 700;
+  color: var(--ink);
+  background: none;
+  border: none;
+  box-shadow: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
   text-align: center;
+  text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white, 0 0 3px white;
 }
 
 .dest-marker:hover {
-  border-color: var(--forest);
   color: var(--forest);
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 
 .dest-marker .dest-price {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: var(--sunset);
-  margin-top: 1px;
 }
-
-@keyframes markerFadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.dest-marker { animation: markerFadeIn 0.3s ease forwards; }
 
 .origin-marker {
-  display: none;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--ink);
+  background: none;
+  border: none;
+  box-shadow: none;
+  white-space: nowrap;
+  text-shadow: 0 0 4px white, 0 0 4px white, 0 0 4px white, 0 0 4px white;
 }
 
 /* ─── MOBILE ─── */
