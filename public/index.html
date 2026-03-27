@@ -934,19 +934,23 @@ body {
 .dest-marker {
   font-family: 'Inter', -apple-system, sans-serif;
   font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--forest);
+  font-weight: 600;
+  color: var(--stone);
   background: none;
   border: none;
   box-shadow: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: all 0.15s ease;
   text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white, 0 0 3px white;
 }
 
-.dest-marker:hover {
-  color: var(--ink);
+.dest-marker:hover,
+.dest-marker.highlighted {
+  color: var(--forest);
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white, 0 0 5px white;
 }
 
 .origin-marker {
@@ -1993,13 +1997,17 @@ function renderDeals(fromCity, deals) {
       </div>
     `, { sticky: true, className: '' });
 
-    // Hover effects on the wide zone control the thin line
+    // Hover effects on the wide zone control the thin line + destination label
     arcHover.on('mouseover', function() {
-      arc.setStyle({ weight: 2.5, opacity: 0.8, color: '#3d6b5e', dashArray: '' });
+      arc.setStyle({ weight: 2.5, opacity: 0.85, color: '#e8734a', dashArray: '' });
+      const label = document.querySelector(`.dest-marker[data-city="${toKey}"]`);
+      if (label) label.classList.add('highlighted');
       highlightGroup(toKey);
     });
     arcHover.on('mouseout', function() {
       arc.setStyle({ weight: 1.5, opacity: 0.45, color: '#94a3b8', dashArray: '3,5' });
+      const label = document.querySelector(`.dest-marker[data-city="${toKey}"]`);
+      if (label) label.classList.remove('highlighted');
       unhighlightGroup(toKey);
     });
     arcHover.on('click', function() {
@@ -2016,7 +2024,7 @@ function renderDeals(fromCity, deals) {
     const marker = L.marker([toCoords.lat, toCoords.lng], {
       icon: L.divIcon({
         className: '',
-        html: `<div class="dest-marker">${markerLabel}</div>`,
+        html: `<div class="dest-marker" data-city="${toKey}">${markerLabel}</div>`,
         iconAnchor: [30, 8],
       }),
     });
