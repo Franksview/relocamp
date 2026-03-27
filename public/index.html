@@ -933,28 +933,20 @@ body {
 /* ─── DESTINATION MARKERS ─── */
 .dest-marker {
   font-family: 'Inter', -apple-system, sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--forest);
   background: none;
   border: none;
   box-shadow: none;
   white-space: nowrap;
   cursor: pointer;
   transition: color 0.2s ease;
-  text-align: center;
   text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white, 0 0 3px white;
 }
 
 .dest-marker:hover {
-  color: var(--forest);
-}
-
-.dest-marker .dest-price {
-  display: block;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--sunset);
+  color: var(--ink);
 }
 
 .origin-marker {
@@ -1967,21 +1959,33 @@ function renderDeals(fromCity, deals) {
       return p < min ? p : min;
     }, 999);
 
-    // Draw arc — thin dotted line
+    // Draw arc — thin dotted line + invisible fat hover zone
     const arcPoints = generateArcPoints(fromCoords, toCoords, 50);
-    const arc = L.polyline(arcPoints, {
-      color: '#64748b',
-      weight: 1.5,
-      opacity: 0.5,
-      dashArray: '4,6',
+
+    // Invisible wide line for easy hovering
+    const arcHover = L.polyline(arcPoints, {
+      color: 'transparent',
+      weight: 16,
+      opacity: 0,
       smoothFactor: 1,
-      lineCap: 'round',
+      interactive: true,
     });
 
-    // Tooltip
+    // Visible thin dotted line
+    const arc = L.polyline(arcPoints, {
+      color: '#94a3b8',
+      weight: 1.5,
+      opacity: 0.45,
+      dashArray: '3,5',
+      smoothFactor: 1,
+      lineCap: 'round',
+      interactive: false,
+    });
+
+    // Tooltip on the hover zone
     const priceStr = cheapest < 999 ? `from €${cheapest}/day` : '';
     const dateStr = groups[toKey][0].date_range || '';
-    arc.bindTooltip(`
+    arcHover.bindTooltip(`
       <div class="arc-tooltip">
         <div class="tt-route">${displayCity(fromCity)} → ${displayCity(toKey)}</div>
         <div class="tt-deals">${dealCount} deal${dealCount !== 1 ? 's' : ''}</div>
@@ -1989,31 +1993,31 @@ function renderDeals(fromCity, deals) {
       </div>
     `, { sticky: true, className: '' });
 
-    // Hover effects
-    arc.on('mouseover', function() {
-      this.setStyle({ weight: 2.5, opacity: 0.8, color: '#3d6b5e', dashArray: '' });
+    // Hover effects on the wide zone control the thin line
+    arcHover.on('mouseover', function() {
+      arc.setStyle({ weight: 2.5, opacity: 0.8, color: '#3d6b5e', dashArray: '' });
       highlightGroup(toKey);
     });
-    arc.on('mouseout', function() {
-      this.setStyle({ weight: 1.5, opacity: 0.5, color: '#64748b', dashArray: '4,6' });
+    arcHover.on('mouseout', function() {
+      arc.setStyle({ weight: 1.5, opacity: 0.45, color: '#94a3b8', dashArray: '3,5' });
       unhighlightGroup(toKey);
     });
-    arc.on('click', function() {
+    arcHover.on('click', function() {
       toggleGroup(toKey);
       const el = document.querySelector(`[data-group="${toKey}"]`);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
+    arcLayers.addLayer(arcHover);
     arcLayers.addLayer(arc);
 
-    // Destination marker — city name + price
+    // Destination marker — just city name, clean
     const markerLabel = displayCity(toKey);
-    const markerPrice = cheapest < 999 ? `€${cheapest}/day` : '';
     const marker = L.marker([toCoords.lat, toCoords.lng], {
       icon: L.divIcon({
         className: '',
-        html: `<div class="dest-marker">${markerLabel}${markerPrice ? `<span class="dest-price">${markerPrice}</span>` : ''}</div>`,
-        iconAnchor: [40, 12],
+        html: `<div class="dest-marker">${markerLabel}</div>`,
+        iconAnchor: [30, 8],
       }),
     });
     marker.on('click', () => {
