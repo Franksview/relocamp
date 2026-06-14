@@ -93,6 +93,48 @@ const CITIES = [
     intro: 'Stuttgart is a major German departure hub for campervan relocations. Rental companies frequently need vehicles moved across the Alps to Italy, west to France, or onward to the Spanish coast — usually at €1/day with flexible pickup dates.',
     destinations: ['Munich', 'Milan', 'Barcelona', 'Lyon', 'Vienna', 'Paris'],
   },
+  // Added 2026-06-14 — HUB_CITIES expanded to 19 based on EXP-017 inventory data.
+  // SEO city pages mirror the cron-pool so subs and organic searchers land in sync.
+  {
+    slug: 'oslo',
+    name: 'Oslo',
+    country: 'Norway',
+    flag: '🇳🇴',
+    intro: 'Oslo is the gateway for campervan relocations across Scandinavia. Rental fleets regularly need vehicles moved to Bergen, Tromsø, Stockholm, or down through Denmark and Germany — often at €1/day for adventurous drivers willing to head north.',
+    destinations: ['Bergen', 'Tromso', 'Stockholm', 'Copenhagen', 'Trondheim', 'Stavanger'],
+  },
+  {
+    slug: 'madrid',
+    name: 'Madrid',
+    country: 'Spain',
+    flag: '🇪🇸',
+    intro: 'Madrid is one of the most active Spanish departure cities for campervan relocations. With rental bases concentrated in the capital, one-way drops to Barcelona, Valencia, the Portuguese coast, or up into France come up regularly for €1/day.',
+    destinations: ['Barcelona', 'Valencia', 'Lisbon', 'Seville', 'Bilbao', 'Porto'],
+  },
+  {
+    slug: 'bari',
+    name: 'Bari',
+    country: 'Italy',
+    flag: '🇮🇹',
+    intro: 'Bari is the launchpad for one-way campervan relocations down the Italian boot and across the Adriatic. Vehicles regularly need moving to Rome, Naples, or even onward via ferry — perfect €1/day road trips along Italy\'s southern coast.',
+    destinations: ['Rome', 'Naples', 'Milan', 'Brindisi', 'Catania', 'Athens'],
+  },
+  {
+    slug: 'bologna',
+    name: 'Bologna',
+    country: 'Italy',
+    flag: '🇮🇹',
+    intro: 'Bologna sits at the crossroads of Italian campervan relocations. Vehicles regularly need to move north to Florence, Venice, or Milan, south to Rome, or across the Alps into Germany — often for €1/day with flexible dates.',
+    destinations: ['Florence', 'Milan', 'Venice', 'Rome', 'Verona', 'Munich'],
+  },
+  {
+    slug: 'seville',
+    name: 'Seville',
+    country: 'Spain',
+    flag: '🇪🇸',
+    intro: 'Seville is southern Spain\'s key departure hub for campervan relocations. Rental companies need vehicles moved north to Madrid and Barcelona, west to Lisbon, or along the Mediterranean coast — at €1/day with generous date windows.',
+    destinations: ['Madrid', 'Barcelona', 'Lisbon', 'Valencia', 'Malaga', 'Granada'],
+  },
 ];
 
 function buildPage(city) {
