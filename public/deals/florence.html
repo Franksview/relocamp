@@ -561,6 +561,20 @@ function safeUrl(u){if(typeof u!=='string')return '#';const t=u.trim().toLowerCa
         </a>
       `;
     }).join('');
+
+    // Add Movacamper cross-link callout below deals (only if 3+ deals shown)
+    if (deals.length >= 3) {
+      el.innerHTML += `
+        <div style="grid-column:1/-1;background:#fef3e6;border:1px solid #fecf5c;border-radius:8px;padding:18px;margin-top:20px;text-align:center">
+          <p style="margin:0 0 10px 0;color:#92400e;font-size:0.95rem">
+            <strong>Search for deals from Florence</strong>
+          </p>
+          <a href="https://movacamper.com/?from=florence" style="display:inline-block;background:#d97706;color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.9rem;transition:background 0.2s">
+            Discover all available deals →
+          </a>
+        </div>
+      `;
+    }
   } catch (err) {
     el.innerHTML = '<p style="color:var(--stone);text-align:center;">Could not load live deals. <a href="/" style="color:var(--forest);font-weight:600;">Visit Relocamp →</a></p>';
   }
