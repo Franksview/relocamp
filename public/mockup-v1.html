@@ -2315,6 +2315,9 @@ const CITY_COORDS = {
   'bratislava': {lat:48.1486,lng:17.1077}, 'ljubljana': {lat:46.0569,lng:14.5058},
   'tallinn': {lat:59.4370,lng:24.7536}, 'riga': {lat:56.9496,lng:24.1052},
   'vilnius': {lat:54.6872,lng:25.2797},
+  // mockup-v1: added after spotting these in live /api/featured fallback deals
+  'rovaniemi': {lat:66.5039,lng:25.7294}, 'tromso': {lat:69.6492,lng:18.9553},
+  'bastia': {lat:42.6979,lng:9.4509},
 };
 
 // ─── CITY NAME ALIASES ───
@@ -2346,6 +2349,8 @@ const CITY_ALIASES = {
   'napoli': 'naples', 'neapel': 'naples',
   'malmö': 'malmo',
   'kraków': 'krakow',
+  // mockup-v1: featured-deals endpoint returns airport-qualified names
+  'paris-orly': 'paris', 'paris-cdg': 'paris', 'orly': 'paris',
 };
 
 // ─── AFFILIATE LINKS ───
@@ -2737,13 +2742,15 @@ function renderDeals(fromCity, deals) {
     });
 
     // Fit map to show origin + nearby hubs
+    const hubFitDuration = 1;
+    const hubFitStartedAt = Date.now();
     if (nearbyHubs.length > 0) {
       const bounds = L.latLngBounds([[fromCoords.lat, fromCoords.lng]]);
       nearbyHubs.forEach(h => {
         const c = CITY_COORDS[h.city];
         if (c) bounds.extend([c.lat, c.lng]);
       });
-      map.fitBounds(bounds, mapFitOptions(60, 7, 1));
+      map.fitBounds(bounds, mapFitOptions(60, 7, hubFitDuration));
     }
 
     // Detect mid-trip context (user has already built trip legs)
@@ -2772,10 +2779,15 @@ function renderDeals(fromCity, deals) {
          </div>
          <div class="dead-end-divider">— or continue your trip —</div>
          <div class="dead-end-continue-label">Travel to a city with camper deals:</div>`
+      // mockup-v1: reframed positive (was "No camper deals from X right now") +
+      // real live deals now render above this as the headline, see fallbackHtml below.
       : `<div class="no-deals-hero">
-           <h3>No camper deals from ${fromDisplay} right now</h3>
-           <p>Deals change daily — but here are the nearest cities where you can start a camper trip. We can help you get there too!</p>
-         </div>`;
+           <h3>${fromDisplay} is quiet today — but Europe isn't</h3>
+           <p>No relocations start from ${fromDisplay} right now. Here's what's live elsewhere today.</p>
+         </div>
+         <div class="sidebar-loading" id="fallbackLoading" style="padding:16px 20px;color:var(--stone);font-size:0.85rem;">Loading live deals…</div>
+         <div id="fallbackDealsContainer"></div>
+         <div class="dead-end-divider">— or explore nearby cities —</div>`;
 
     content.innerHTML = `
       ${heroHtml}
@@ -2827,6 +2839,114 @@ function renderDeals(fromCity, deals) {
         if (el) el.innerHTML = '';
       }
     });
+
+    // mockup-v1: first-visit only — fetch real live deals from elsewhere in
+    // Europe (same endpoint Movacamper's EXP-018 no-results fix uses) and
+    // render them as the headline content, not buried under tips. Also draw
+    // them on the map — Relocamp has a map, Movacamper doesn't, so this is
+    // a stronger version of the same fix.
+    if (!isMidTrip) {
+      (async () => {
+        try {
+          const res = await fetch('https://www.movacamper.com/api/featured');
+          const data = await res.json();
+          // mockup-v1: sort by distance from the searched city instead of taking
+          // the raw top 5. Unsorted, these can be scattered across all of Europe
+          // (Rovaniemi to Porto) — not a relevant suggestion for someone in
+          // Amsterdam, and it forces the map into an unreadable near-world zoom.
+          // Same proximity logic findNearbyHubs() already uses for hub cities.
+          // Use the WORSE (max) of the two endpoint distances, not just the
+          // origin — "Helsinki -> Rovaniemi" has a relatively close origin but
+          // an extremely remote destination, and either end being far away
+          // makes it an irrelevant suggestion and drags the map view with it.
+          const cityDist = (name) => {
+            const key = resolveCity((name || '').toLowerCase().trim().replace(/\s+/g, '-'));
+            const c = key && CITY_COORDS[key];
+            return c ? haversineDistance(fromCoords.lat, fromCoords.lng, c.lat, c.lng) : Infinity;
+          };
+          const withDistance = (data.deals || []).map(d => ({
+            deal: d,
+            dist: Math.max(cityDist(d.from), cityDist(d.to)),
+          }));
+          withDistance.sort((a, b) => a.dist - b.dist);
+          const fallback = withDistance.slice(0, 5).map(x => x.deal);
+          const loadingEl = document.getElementById('fallbackLoading');
+          const containerEl = document.getElementById('fallbackDealsContainer');
+          if (!containerEl) return; // user navigated away before this resolved
+          if (loadingEl) loadingEl.remove();
+          if (fallback.length === 0) return;
+
+          containerEl.innerHTML = fallback.map((d, i) => {
+            const fKey = resolveCity((d.from || '').toLowerCase().trim().replace(/\s+/g, '-')) || (d.from || '').toLowerCase();
+            const tKey = resolveCity((d.to || '').toLowerCase().trim().replace(/\s+/g, '-')) || (d.to || '').toLowerCase();
+            return renderDealCard(d, fKey, tKey, i);
+          }).join('');
+          trackEvent('deal_view', { city: fromCity, count: fallback.length, variant: 'no-results-fallback' });
+
+          // Draw these live-elsewhere deals on the map too (sky-blue, distinct
+          // from the gray nearby-hub lines) and expand the fit to include them.
+          const liveBounds = L.latLngBounds([[fromCoords.lat, fromCoords.lng]]);
+          let drewAny = false;
+          fallback.forEach(d => {
+            const fKey = resolveCity((d.from || '').toLowerCase().trim().replace(/\s+/g, '-'));
+            const tKey = resolveCity((d.to || '').toLowerCase().trim().replace(/\s+/g, '-'));
+            const fc = fKey && CITY_COORDS[fKey];
+            const tc = tKey && CITY_COORDS[tKey];
+            if (!fc || !tc) return;
+            drewAny = true;
+            const arc = L.polyline(generateArcPoints(fc, tc, 30), {
+              color: '#4a7fa5',
+              weight: 1.5,
+              opacity: 0.55,
+              smoothFactor: 1,
+              lineCap: 'round',
+            });
+            arc.on('click', () => pickCity(fKey));
+            arcLayers.addLayer(arc);
+            const marker = L.marker([tc.lat, tc.lng], {
+              icon: L.divIcon({
+                className: '',
+                html: `<div class="dest-marker">${displayCity(tKey)}</div>`,
+                iconAnchor: [30, 8],
+              }),
+            });
+            marker.on('click', () => pickCity(fKey));
+            markerLayers.addLayer(marker);
+            liveBounds.extend([fc.lat, fc.lng]);
+            liveBounds.extend([tc.lat, tc.lng]);
+          });
+          nearbyHubs.forEach(h => { const c = CITY_COORDS[h.city]; if (c) liveBounds.extend([c.lat, c.lng]); });
+          if (drewAny) {
+            // mockup-v1: the featured fetch can resolve fast enough to fire this
+            // while the nearby-hubs fitBounds above is still mid-animation. Leaflet's
+            // animated zoom+pan doesn't interrupt cleanly when a second fitBounds
+            // call lands before the first's transition finishes (verified: both
+            // map.stop() and an instant/non-animated second call still produced a
+            // corrupted final view). Simplest reliable fix: wait out the first
+            // animation's remaining time before firing the second.
+            const elapsed = Date.now() - hubFitStartedAt;
+            const remaining = Math.max(0, hubFitDuration * 1000 + 50 - elapsed);
+            await new Promise(r => setTimeout(r, remaining));
+            // Featured deals can be scattered across all of Europe (Rovaniemi to
+            // Porto) — fitting ALL of them forces a near-world zoom-out that looks
+            // broken (overlapping labels, visible Greenland/Africa). Floor the
+            // zoom at 4 (~all of Europe) instead; far-flung deals simply won't
+            // get a map pin, but they're still fully visible as cards above.
+            const fitOpts = mapFitOptions(60, 6, 1);
+            const naturalZoom = map.getBoundsZoom(liveBounds, false, fitOpts.padding
+              ? L.point(fitOpts.padding) : L.point(fitOpts.paddingTopLeft || [0, 0]));
+            if (naturalZoom < 4) {
+              map.setView(liveBounds.getCenter(), 4, { animate: true, duration: 1 });
+            } else {
+              map.fitBounds(liveBounds, fitOpts);
+            }
+          }
+        } catch (e) {
+          const loadingEl = document.getElementById('fallbackLoading');
+          if (loadingEl) loadingEl.remove();
+        }
+      })();
+    }
 
     return;
   }
