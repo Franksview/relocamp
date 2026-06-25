@@ -63,6 +63,19 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.15);
   --transition: 0.2s ease;
+
+  /* v2: price-confidence scale (Hopper-style deal badges) */
+  --great: #2f9e6e;
+  --great-bg: #e3f6ec;
+  --good: #f5b731;
+  --good-bg: #fef3c7;
+  --fair: #94a3b8;
+  --fair-bg: #f1f5f9;
+
+  /* v2: friendlier card language */
+  --radius-lg: 18px;
+  --shadow-card: 0 2px 8px rgba(26,26,26,0.06), 0 1px 2px rgba(26,26,26,0.04);
+  --shadow-card-hover: 0 8px 20px rgba(26,26,26,0.10), 0 2px 6px rgba(26,26,26,0.06);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -102,40 +115,332 @@ body {
   background: var(--paper);
 }
 
-.sidebar-logo {
+/* v2: logo moved off the sidebar (which is now just the search box) onto a
+   floating badge over the map — map-first, branding as a light overlay
+   instead of competing with the search input for header space. */
+.map-logo-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 15;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  padding: 8px 16px;
+  box-shadow: var(--shadow-md);
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: var(--forest);
-  margin-bottom: 12px;
   cursor: pointer;
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
-  transition: opacity var(--transition);
+  transition: box-shadow var(--transition);
   user-select: none;
 }
 
-.sidebar-logo:hover { opacity: 0.7; }
-.sidebar-logo span { color: var(--sunset); }
+.map-logo-badge:hover { box-shadow: var(--shadow-lg); }
+.map-logo-badge span { color: var(--sunset); }
 
-.sidebar-logo-sub {
-  font-family: inherit;
-  font-size: 0.65rem;
-  color: var(--stone);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+/* v2: first-visit explainer — a dismissible overlay card floating over the
+   map, NOT a blocking modal. The map stays visible and isn't dimmed; this
+   is closer to a tooltip/coachmark than a dialog the user must act on
+   before doing anything else. Dismissal is remembered via localStorage. */
+.intro-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  pointer-events: none; /* only the card itself should capture clicks */
+}
+
+.intro-overlay.visible { pointer-events: auto; }
+
+.intro-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px 24px 24px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  position: relative;
   opacity: 0;
-  max-width: 0;
-  overflow: hidden;
-  transition: all var(--transition);
-  white-space: nowrap;
+  transform: translateY(8px) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.sidebar-logo:hover .sidebar-logo-sub {
-  opacity: 0.7;
-  max-width: 120px;
-  margin-left: 8px;
+.intro-overlay.visible .intro-card {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
+
+.intro-card h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.intro-card p {
+  font-size: 0.85rem;
+  color: var(--warm);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.intro-explainer-strip { margin: 0 0 18px; }
+
+/* v2: circular "compass" explainer — Pick/Drive/Explore/Repeat placed around
+   a ring with a dot that travels station to station and loops, instead of a
+   straight line with arrows. Reinforces that this is a repeatable loop, not
+   a one-time itinerary. */
+.compass-wrap {
+  position: relative;
+  width: 184px;
+  height: 184px;
+  margin: 8px auto 22px;
+}
+
+/* v2 (instrument look, take 3): brass bezel with continuous degree ticks +
+   an 8-point star backdrop, modeled directly on the two compass references
+   — gold ring, tick-marked rim, star rose behind the needle — recolored to
+   the site's palette. The ring (with our 4 stations) rotates; the needle
+   idles with its own small wobble instead of tracking it. */
+.compass-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--paper) 0% 70%, var(--sand) 70% 84%, var(--gold) 84% 100%);
+  box-shadow: var(--shadow-md), inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+.compass-ring::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(var(--ink-light) 0deg 0.7deg, transparent 0.7deg 6deg);
+  opacity: 0.55;
+  -webkit-mask: radial-gradient(circle, transparent 80%, black 80.5% 90%, transparent 90.5%);
+  mask: radial-gradient(circle, transparent 80%, black 80.5% 90%, transparent 90.5%);
+}
+
+/* 8-point star rose behind the needle, like the star motif in both
+   reference compasses — two overlapping squares rotated 45° apart. */
+.compass-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 108px;
+  height: 108px;
+  margin: -54px 0 0 -54px;
+  z-index: 2;
+}
+
+.compass-star::before,
+.compass-star::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--gold);
+  opacity: 0.4;
+}
+
+.compass-star::before { transform: rotate(0deg); }
+.compass-star::after { transform: rotate(45deg); }
+
+.compass-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  background: var(--forest);
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--gold);
+  z-index: 4;
+}
+
+/* Short tick dash at the rim, one per station, sitting just inside the
+   degree-tick band above. */
+.compass-spoke {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 10px;
+  margin: -78px 0 0 -1px;
+  background: var(--ink-light);
+  transform-origin: center 78px;
+  transform: rotate(var(--angle));
+  opacity: 0.55;
+}
+
+/* v2 (revised): the dial — the ring of stations — rotates as one group,
+   like a compass bezel turning, while the needle (below) idles
+   independently on top of it. */
+.compass-dial {
+  position: absolute;
+  inset: 0;
+  animation: compassDialRotate 8s ease-in-out infinite;
+}
+
+/* The needle: two thin tapering arms meeting at the hub (long sunset arm +
+   shorter pale arm), like a real compass needle — not a blunt diamond. It
+   doesn't track the ring's rotation — it has its own small idle wobble,
+   like a magnetic needle settling. */
+.compass-needle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 16px;
+  margin: -8px 0 0 -75px;
+  display: flex;
+  align-items: center;
+  transform: rotate(-12deg);
+  animation: needleWobble 4.5s ease-in-out infinite;
+  filter: drop-shadow(0 1px 2px rgba(26,26,26,0.3));
+  z-index: 5;
+}
+
+.compass-needle-point {
+  width: 90px;
+  height: 14px;
+  background: var(--sunset);
+  clip-path: polygon(100% 50%, 0% 10%, 0% 90%);
+}
+
+.compass-needle-tail {
+  width: 60px;
+  height: 11px;
+  background: var(--gold-light);
+  filter: drop-shadow(0 0 0.5px var(--ink-light));
+  clip-path: polygon(0% 50%, 100% 12%, 100% 88%);
+}
+
+@keyframes needleWobble {
+  0%, 100% { transform: rotate(-12deg); }
+  50% { transform: rotate(-6deg); }
+}
+
+.compass-station {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  margin-left: -32px;
+  margin-top: -20px;
+  transform: rotate(var(--angle)) translate(0, -68px) rotate(calc(-1 * var(--angle)));
+}
+
+/* Counter-rotates against the dial's own spin (mirrored keyframes, same
+   timing) so icon/label stay upright on screen while their position still
+   travels around the ring with the dial. */
+.compass-station-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  animation: compassDialCounterRotate 8s ease-in-out infinite;
+}
+
+.compass-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+.compass-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--warm);
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.compass-station.active .compass-icon { transform: scale(1.2); }
+.compass-station.active .compass-label { color: var(--forest); font-weight: 800; }
+
+@keyframes compassDialRotate {
+  0%, 17.5%   { transform: rotate(0deg); }
+  25%, 42.5%  { transform: rotate(-90deg); }
+  50%, 67.5%  { transform: rotate(-180deg); }
+  75%, 92.5%  { transform: rotate(-270deg); }
+  100%        { transform: rotate(-360deg); }
+}
+
+@keyframes compassDialCounterRotate {
+  0%, 17.5%   { transform: rotate(0deg); }
+  25%, 42.5%  { transform: rotate(90deg); }
+  50%, 67.5%  { transform: rotate(180deg); }
+  75%, 92.5%  { transform: rotate(270deg); }
+  100%        { transform: rotate(360deg); }
+}
+
+.intro-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: var(--stone);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.intro-compass-logo {
+  width: 140px;
+  height: 140px;
+  margin: 12px auto 18px;
+  display: block;
+}
+
+.intro-got-it {
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 28px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.intro-got-it:hover { background: var(--forest-light); }
+
+/* Small recall button, bottom-left of the map, to reopen the explainer */
+.intro-reopen-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 15;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-md);
+  color: var(--forest);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-reopen-btn.visible { display: flex; }
 
 /* ─── SHARE POPUP ─── */
 .share-popup-overlay {
@@ -696,15 +1001,16 @@ body {
 
 /* ─── DEAL CARD ─── */
 .deal-card {
-  background: var(--paper);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  margin-bottom: 8px;
-  border: 1px solid rgba(0,0,0,0.04);
-  transition: box-shadow var(--transition);
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--transition), transform var(--transition);
 }
 
-.deal-card:hover { box-shadow: var(--shadow-md); }
+.deal-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-1px); }
 
 .deal-card-route {
   font-weight: 700;
@@ -712,6 +1018,20 @@ body {
   color: var(--forest);
   margin-bottom: 6px;
 }
+
+/* v2: Hopper-style price-confidence badge */
+.confidence-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+.confidence-badge.confidence-great { background: var(--great-bg); color: var(--great); }
+.confidence-badge.confidence-good { background: var(--good-bg); color: #92650f; }
+.confidence-badge.confidence-fair { background: var(--fair-bg); color: var(--fair); }
 
 .deal-card-top {
   display: flex;
@@ -1053,6 +1373,14 @@ body {
   font-size: 0.82rem;
   color: var(--stone);
   line-height: 1.5;
+}
+
+/* v2: small friendly icon above the no-results headline, instead of a bare
+   text-only "quiet today" message */
+.no-deals-hero .no-deals-icon {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+  display: block;
 }
 
 /* ─── DEAD-END (mid-trip arrival with no outbound deals) ─── */
@@ -1754,16 +2082,21 @@ body {
     width: 60px;
   }
 
-  /* Compact logo on mobile — acts as "home" button */
-  .sidebar-logo {
-    display: inline-flex !important;
-    font-size: 1rem;
-    margin-bottom: 8px;
-    padding: 6px 0;
-    min-height: 36px;
-    align-items: center;
+  /* Compact logo badge on mobile — still floats over the map, smaller */
+  .map-logo-badge {
+    font-size: 0.95rem;
+    padding: 6px 12px;
+    top: 12px;
+    left: 12px;
   }
-  .sidebar-logo-sub { display: none; }
+
+  /* Mobile: the bottom sheet covers the lower ~58vh, so the recall button
+     would be hidden there — move it under the logo badge instead. */
+  .intro-reopen-btn {
+    top: 58px;
+    left: 12px;
+    bottom: auto;
+  }
 
   /* Mobile input needs bigger target */
   .search-input-wrap input {
@@ -1805,6 +2138,13 @@ body {
   .drag-handle { display: none; }
   #map { left: 400px; }
   .trip-bar { display: none !important; }
+
+  /* Desktop: the sidebar occupies the left 400px, so badge/recall-button
+     need to sit inside the map area (which starts at left:400px), not at
+     the viewport's left edge where they'd land on top of the sidebar. */
+  .map-logo-badge { left: 416px; }
+  .intro-reopen-btn { left: 416px; }
+  .intro-overlay { left: 400px; }
 
   /* Sidebar toggle button */
   .sidebar-toggle {
@@ -1964,6 +2304,49 @@ body {
   color: var(--warm);
   margin-top: 8px;
   line-height: 1.5;
+}
+
+/* v2: Hopper-style "how it works" explainer strip — first-time visitors get
+   the mechanic in 3 glanceable steps before being asked to type a city. */
+.explainer-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 14px 16px;
+  margin: 0 20px 18px;
+  background: var(--sand);
+  border-radius: var(--radius-lg);
+}
+
+.explainer-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 2px 4px;
+}
+
+.explainer-step-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.explainer-step-text {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink-light);
+  line-height: 1.3;
+}
+
+.explainer-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--stone);
+  font-size: 0.9rem;
+  opacity: 0.6;
+  padding-top: 10px;
 }
 
 .popular-section {
@@ -2189,12 +2572,93 @@ body {
 
 <div id="map"></div>
 
+<div class="map-logo-badge" onclick="goToWelcome()" title="Back to start" role="button" tabindex="0" aria-label="Back to start">Relo<span>camp</span></div>
+
+<button class="intro-reopen-btn" id="introReopenBtn" onclick="showIntro()" title="How Relocamp works" aria-label="How Relocamp works">?</button>
+
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-card">
+    <button class="intro-close" onclick="dismissIntro()" aria-label="Close">✕</button>
+    <h3>Roam Europe for the price of a coffee</h3>
+    <p>Camper companies need their vans moved between cities — empty. You drive them instead. Pick up a cheap leg, explore for a few days, then grab the next one. No fixed plan, no big budget — just keep moving. No leg from here? Hop a cheap train, bus or flight to the next pickup.</p>
+    <!-- TODO: replace this with a proper rotating-compass diagram (ring of
+         Pick/Drive/Explore/Repeat rotates, needle idles independently) once
+         the visual design is right — multiple attempts this session (plain
+         dial, brass/star bezel) didn't land. Reverted to a plain step row
+         for now. See chat history 2026-06-24 Relocamp redesign session. -->
+    <div class="explainer-strip intro-explainer-strip">
+      <div class="explainer-step">
+        <span class="explainer-step-icon">📍</span>
+        <span class="explainer-step-text">Pick</span>
+      </div>
+      <div class="explainer-arrow">→</div>
+      <div class="explainer-step">
+        <span class="explainer-step-icon">🚐</span>
+        <span class="explainer-step-text">Drive</span>
+      </div>
+      <div class="explainer-arrow">→</div>
+      <div class="explainer-step">
+        <span class="explainer-step-icon">🗺️</span>
+        <span class="explainer-step-text">Explore</span>
+      </div>
+      <div class="explainer-arrow">→</div>
+      <div class="explainer-step">
+        <span class="explainer-step-icon">🔁</span>
+        <span class="explainer-step-text">Repeat</span>
+      </div>
+    </div>
+    <svg class="intro-compass-logo" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <path id="topCurve" d="M 30,80 A 50,50 0 0,1 130,80" fill="none"/>
+        <path id="bottomCurve" d="M 130,80 A 50,50 0 0,1 30,80" fill="none"/>
+      </defs>
+
+      <!-- Outer ring -->
+      <circle cx="80" cy="80" r="56" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+
+      <!-- Text on curves -->
+      <text font-family="Georgia, serif" font-size="10" font-weight="bold" letter-spacing="1.5" fill="#1a1a1a">
+        <textPath href="#topCurve" startOffset="50%" text-anchor="middle">
+          DESTINY · FAR-AWAY · DREAMS
+        </textPath>
+      </text>
+      <text font-family="Georgia, serif" font-size="10" font-weight="bold" letter-spacing="1.5" fill="#1a1a1a">
+        <textPath href="#bottomCurve" startOffset="50%" text-anchor="middle">
+          LEGEND · ADVENTURE · HORIZON
+        </textPath>
+      </text>
+
+      <!-- Side text -->
+      <text x="20" y="86" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#1a1a1a">WANDER</text>
+      <text x="125" y="86" font-family="Georgia, serif" font-size="11" font-weight="bold" text-anchor="end" fill="#1a1a1a">EXPLORE</text>
+
+      <!-- Mountain peaks in center -->
+      <polygon points="80,35 95,60 70,55 85,65 60,60 80,70" fill="#1a1a1a"/>
+
+      <!-- Star compass backdrop -->
+      <g opacity="0.6">
+        <line x1="80" y1="40" x2="80" y2="120" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="40" y1="80" x2="120" y2="80" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="52" y1="52" x2="108" y2="108" stroke="#1a1a1a" stroke-width="1"/>
+        <line x1="108" y1="52" x2="52" y2="108" stroke="#1a1a1a" stroke-width="1"/>
+      </g>
+
+      <!-- Wavy lines at bottom -->
+      <path d="M 50,100 Q 55,95 60,100 T 70,100 T 80,100 T 90,100 T 100,100" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity="0.7"/>
+      <path d="M 50,108 Q 55,103 60,108 T 70,108 T 80,108 T 90,108 T 100,108" stroke="#1a1a1a" stroke-width="1.5" fill="none" opacity="0.7"/>
+
+      <!-- Center dot -->
+      <circle cx="80" cy="80" r="4" fill="#1a1a1a"/>
+    </svg>
+    <button class="intro-got-it" onclick="dismissIntro()">Got it</button>
+  </div>
+</div>
+
 <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
 
 <div class="sidebar" id="sidebar">
   <div class="drag-handle" id="dragHandle"></div>
   <div class="sidebar-header">
-    <div class="sidebar-logo" onclick="goToWelcome()" title="Back to start" role="button" tabindex="0" aria-label="Back to start">Relo<span>camp</span><span class="sidebar-logo-sub">← click to restart</span></div>
     <div class="search-input-wrap">
       <input type="text" id="searchInput" placeholder="Enter a city to explore deals..." autocomplete="off" aria-label="Search for a city" role="combobox" aria-expanded="false" aria-controls="autocomplete">
       <div class="autocomplete-list" id="autocomplete" role="listbox"></div>
@@ -2714,14 +3178,35 @@ function renderDeals(fromCity, deals) {
   // ── NO DEALS: Smart nearby hub discovery ──
   if (deals.length === 0) {
     trackEvent('search_no_results', { city: fromCity });
-    // mockup-v1: capped at 3 (was 5) — once live-deal markers are added below,
+    // v2: capped at 3 (was 5) — once live-deal markers are added below,
     // 5 nearby-hub labels + N live-deal labels on a zoomed-out desktop map
     // collide (fixed-size divIcons don't scale or avoid overlap on their own).
     const nearbyHubs = findNearbyHubs(fromCity, 3);
     const fromCoords = CITY_COORDS[fromCity];
     const fromDisplay = displayCity(fromCity);
 
-    // Draw dashed arcs + markers for each nearby hub on the map
+    // v2: outlier filter for the camera fit. A point farther than this from the
+    // origin is still rendered as a card/marker, but excluded from the bounds
+    // the map fits to — one remote deal (e.g. Helsinki -> Rovaniemi) can no
+    // longer drag the whole map into an unreadable near-world zoom.
+    const OUTLIER_KM = 1500;
+    const withinOutlierRadius = (c) => !!c && haversineDistance(fromCoords.lat, fromCoords.lng, c.lat, c.lng) <= OUTLIER_KM;
+
+    // v2: single combined camera fit, called at most once per data source
+    // becoming available — replaces the old two-staggered-fitBounds approach
+    // that caused a visible flash/zoom-jump as the second call landed mid-
+    // animation of the first.
+    const fitToKnownMarkers = (extraCoords) => {
+      const candidates = [fromCoords, ...nearbyHubs.map(h => CITY_COORDS[h.city]).filter(Boolean), ...(extraCoords || [])];
+      const inRange = candidates.filter(withinOutlierRadius);
+      const useCoords = inRange.length > 0 ? inRange : candidates;
+      const bounds = L.latLngBounds(useCoords.map(c => [c.lat, c.lng]));
+      map.fitBounds(bounds, mapFitOptions(60, 7, 1));
+    };
+
+    // Draw dashed arcs + markers for each nearby hub on the map (camera doesn't
+    // move yet — it moves exactly once, below, after all markers for this
+    // screen are known).
     nearbyHubs.forEach(hub => {
       const hCoords = CITY_COORDS[hub.city];
       if (!hCoords) return;
@@ -2751,17 +3236,10 @@ function renderDeals(fromCity, deals) {
       markerLayers.addLayer(marker);
     });
 
-    // Fit map to show origin + nearby hubs
-    const hubFitDuration = 1;
-    const hubFitStartedAt = Date.now();
-    if (nearbyHubs.length > 0) {
-      const bounds = L.latLngBounds([[fromCoords.lat, fromCoords.lng]]);
-      nearbyHubs.forEach(h => {
-        const c = CITY_COORDS[h.city];
-        if (c) bounds.extend([c.lat, c.lng]);
-      });
-      map.fitBounds(bounds, mapFitOptions(60, 7, hubFitDuration));
-    }
+    // v2: instant, non-animated recenter on the origin so the map doesn't sit
+    // on a stale previous view while we gather the rest of the markers for
+    // this screen — the single animated fit happens once, below.
+    map.setView([fromCoords.lat, fromCoords.lng], 5, { animate: false });
 
     // Detect mid-trip context (user has already built trip legs)
     const isMidTrip = tripLegs.length > 0;
@@ -2792,6 +3270,7 @@ function renderDeals(fromCity, deals) {
       // mockup-v1: reframed positive (was "No camper deals from X right now") +
       // real live deals now render above this as the headline, see fallbackHtml below.
       : `<div class="no-deals-hero">
+           <span class="no-deals-icon">🗺️</span>
            <h3>${fromDisplay} is quiet today — but Europe isn't</h3>
            <p>No relocations start from ${fromDisplay} right now. Here's what's live elsewhere today.</p>
          </div>
@@ -2824,6 +3303,12 @@ function renderDeals(fromCity, deals) {
         }).join('')}
       </div>
     `;
+
+    // v2: mid-trip screen has no live-deals fetch coming, so the single
+    // camera fit happens right away using just the origin + nearby hubs.
+    if (isMidTrip) {
+      fitToKnownMarkers([]);
+    }
 
     // Async: check deal availability for nearest hubs, reorder (deals first)
     nearbyHubs.slice(0, 5).forEach(async hub => {
@@ -2884,7 +3369,7 @@ function renderDeals(fromCity, deals) {
           const containerEl = document.getElementById('fallbackDealsContainer');
           if (!containerEl) return; // user navigated away before this resolved
           if (loadingEl) loadingEl.remove();
-          if (fallback.length === 0) return;
+          if (fallback.length === 0) { fitToKnownMarkers([]); return; }
 
           containerEl.innerHTML = fallback.map((d, i) => {
             const fKey = resolveCity((d.from || '').toLowerCase().trim().replace(/\s+/g, '-')) || (d.from || '').toLowerCase();
@@ -2894,19 +3379,19 @@ function renderDeals(fromCity, deals) {
           trackEvent('deal_view', { city: fromCity, count: fallback.length, variant: 'no-results-fallback' });
 
           // Draw these live-elsewhere deals on the map too (sky-blue, distinct
-          // from the gray nearby-hub lines) and expand the fit to include them.
-          const liveBounds = L.latLngBounds([[fromCoords.lat, fromCoords.lng]]);
-          let drewAny = false;
-          // mockup-v1: only pin the top 3 on the map (cards above still show
-          // all 5) — beyond 3, destination labels start colliding with the
-          // nearby-hub labels once the map zooms out to fit everything.
+          // from the gray nearby-hub lines). The camera fit itself happens once,
+          // below, via fitToKnownMarkers — this is the only fit call for the
+          // whole no-results screen, v1's staggered double-fitBounds is gone.
+          const liveCoordsForFit = [];
+          // v2: only pin the top 3 on the map (cards above still show all 5) —
+          // beyond 3, destination labels start colliding with the nearby-hub
+          // labels once the map zooms out to fit everything.
           fallback.slice(0, 3).forEach(d => {
             const fKey = resolveCity((d.from || '').toLowerCase().trim().replace(/\s+/g, '-'));
             const tKey = resolveCity((d.to || '').toLowerCase().trim().replace(/\s+/g, '-'));
             const fc = fKey && CITY_COORDS[fKey];
             const tc = tKey && CITY_COORDS[tKey];
             if (!fc || !tc) return;
-            drewAny = true;
             const arc = L.polyline(generateArcPoints(fc, tc, 30), {
               color: '#4a7fa5',
               weight: 1.5,
@@ -2925,38 +3410,16 @@ function renderDeals(fromCity, deals) {
             });
             marker.on('click', () => pickCity(fKey));
             markerLayers.addLayer(marker);
-            liveBounds.extend([fc.lat, fc.lng]);
-            liveBounds.extend([tc.lat, tc.lng]);
+            liveCoordsForFit.push(fc, tc);
           });
-          nearbyHubs.forEach(h => { const c = CITY_COORDS[h.city]; if (c) liveBounds.extend([c.lat, c.lng]); });
-          if (drewAny) {
-            // mockup-v1: the featured fetch can resolve fast enough to fire this
-            // while the nearby-hubs fitBounds above is still mid-animation. Leaflet's
-            // animated zoom+pan doesn't interrupt cleanly when a second fitBounds
-            // call lands before the first's transition finishes (verified: both
-            // map.stop() and an instant/non-animated second call still produced a
-            // corrupted final view). Simplest reliable fix: wait out the first
-            // animation's remaining time before firing the second.
-            const elapsed = Date.now() - hubFitStartedAt;
-            const remaining = Math.max(0, hubFitDuration * 1000 + 50 - elapsed);
-            await new Promise(r => setTimeout(r, remaining));
-            // Featured deals can be scattered across all of Europe (Rovaniemi to
-            // Porto) — fitting ALL of them forces a near-world zoom-out that looks
-            // broken (overlapping labels, visible Greenland/Africa). Floor the
-            // zoom at 4 (~all of Europe) instead; far-flung deals simply won't
-            // get a map pin, but they're still fully visible as cards above.
-            const fitOpts = mapFitOptions(60, 6, 1);
-            const naturalZoom = map.getBoundsZoom(liveBounds, false, fitOpts.padding
-              ? L.point(fitOpts.padding) : L.point(fitOpts.paddingTopLeft || [0, 0]));
-            if (naturalZoom < 4) {
-              map.setView(liveBounds.getCenter(), 4, { animate: true, duration: 1 });
-            } else {
-              map.fitBounds(liveBounds, fitOpts);
-            }
-          }
+          fitToKnownMarkers(liveCoordsForFit);
         } catch (e) {
           const loadingEl = document.getElementById('fallbackLoading');
           if (loadingEl) loadingEl.remove();
+          // v2: featured fetch failed — still do the one fit using just the
+          // origin + nearby hubs, instead of leaving the map on the instant
+          // recenter forever.
+          fitToKnownMarkers([]);
         }
       })();
     }
@@ -3129,6 +3592,18 @@ function renderDealCard(deal, from, to, index, showRoute) {
     priceHtml = deal.price || '€1/day';
   }
 
+  // v2: Hopper-style price-confidence badge. Relocation deals are nearly
+  // always €1-5/day by nature of the model (companies pay to move the
+  // vehicle) — the badge isn't comparing to a "normal" market price, it's
+  // flagging just how good €1/day specifically is vs. the rest of the range.
+  const priceNum = parseFloat((deal.price || '').replace(/[^0-9.]/g, ''));
+  let confidence = { tier: 'fair', label: 'Good price' };
+  if (priceNum <= 1) confidence = { tier: 'great', label: 'Great deal' };
+  else if (priceNum <= 5) confidence = { tier: 'good', label: 'Good price' };
+  const confidenceBadge = !isNaN(priceNum)
+    ? `<span class="confidence-badge confidence-${confidence.tier}">${confidence.label}</span>`
+    : '';
+
   return `
     <div class="deal-card" style="border-left: 3px solid var(--${providerClass === 'default' ? 'sand' : providerClass === 'imoova' ? 'forest' : providerClass === 'roadsurfer' ? 'sunset' : providerClass === 'bunk' ? 'sky' : 'stone'});">
       ${routeHtml}
@@ -3138,6 +3613,7 @@ function renderDealCard(deal, from, to, index, showRoute) {
         </span>
         <span class="deal-price">${priceHtml}</span>
       </div>
+      ${confidenceBadge}
       ${details.length > 0 ? `<div class="deal-details">${details.join(' · ')}</div>` : ''}
       <div class="deal-actions">
         <button class="btn-add-trip" data-deal-index="${dealIdx}" title="Plan this leg (you'll book separately)">+ Plan this leg</button>
@@ -4606,10 +5082,49 @@ if (window.innerWidth <= 768) {
   });
 }
 
+// ─── FIRST-VISIT EXPLAINER (dismissible overlay, not a blocking modal) ───
+const INTRO_DISMISSED_KEY = 'relocamp_intro_dismissed';
+function showIntro() {
+  document.getElementById('introOverlay').classList.add('visible');
+  document.getElementById('introReopenBtn').classList.remove('visible');
+}
+function dismissIntro() {
+  document.getElementById('introOverlay').classList.remove('visible');
+  document.getElementById('introReopenBtn').classList.add('visible');
+  try { localStorage.setItem(INTRO_DISMISSED_KEY, '1'); } catch (e) {}
+}
+function initIntro() {
+  let alreadyDismissed = false;
+  try { alreadyDismissed = localStorage.getItem(INTRO_DISMISSED_KEY) === '1'; } catch (e) {}
+  if (alreadyDismissed) {
+    document.getElementById('introReopenBtn').classList.add('visible');
+  } else {
+    showIntro();
+  }
+  startCompassCycle();
+}
+
+// v2: highlights whichever station the compass dot is currently sitting on,
+// timed to match the 8s/4-station rotation in the .compass-needle-wrap
+// animation above.
+function startCompassCycle() {
+  const stations = document.querySelectorAll('#compassWrap .compass-station');
+  if (!stations.length) return;
+  let i = 0;
+  const tick = () => {
+    stations.forEach(s => s.classList.remove('active'));
+    stations[i].classList.add('active');
+    i = (i + 1) % stations.length;
+  };
+  tick();
+  setInterval(tick, 2000);
+}
+
 // ─── INIT ───
 initMap();
 renderPopularChips();
 loadSocialProof();
+initIntro();
 </script>
 
 <!-- Footer with internal links — visible on desktop, hidden on mobile (sidebar + map is full-screen there) -->
