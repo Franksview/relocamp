@@ -123,11 +123,11 @@ body {
   top: 16px;
   left: 16px;
   z-index: 15;
-  background: transparent;
-  backdrop-filter: none;
-  border-radius: 0;
-  padding: 0;
-  box-shadow: none;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -139,8 +139,13 @@ body {
 }
 
 .map-logo-badge:hover { opacity: 0.8; }
-.map-logo-badge img { width: 100%; height: 100%; object-fit: contain; }
-.map-logo-badge span { display: none; }
+.map-logo-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: transparent !important;
+}
+.map-logo-badge span { display: none !important; }
 
 /* v2: first-visit explainer — a dismissible overlay card floating over the
    map, NOT a blocking modal. The map stays visible and isn't dimmed; this
