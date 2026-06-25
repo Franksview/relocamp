@@ -1,0 +1,55 @@
+<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path id="topCurve" d="M 30,80 A 50,50 0 0,1 130,80" fill="none"/>
+    <path id="bottomCurve" d="M 130,80 A 50,50 0 0,1 30,80" fill="none"/>
+  </defs>
+  
+  <!-- Outer ring -->
+  <circle cx="80" cy="80" r="56" fill="none" stroke="#000" stroke-width="2.5"/>
+  
+  <!-- Tick marks around rim -->
+  <g stroke="#000" stroke-width="1" opacity="0.4">
+    <line x1="80" y1="24" x2="80" y2="28"/>
+    <line x1="119.8" y1="40.2" x2="117" y2="42.8"/>
+    <line x1="136" y1="80" x2="132" y2="80"/>
+    <line x1="119.8" y1="119.8" x2="117" y2="117.2"/>
+    <line x1="80" y1="136" x2="80" y2="132"/>
+    <line x1="40.2" y1="119.8" x2="43" y2="117.2"/>
+    <line x1="24" y1="80" x2="28" y2="80"/>
+    <line x1="40.2" y1="40.2" x2="43" y2="42.8"/>
+  </g>
+  
+  <!-- Text on curves -->
+  <text font-family="Georgia, serif" font-size="9" font-weight="bold" letter-spacing="1" fill="#000" dominant-baseline="middle">
+    <textPath href="#topCurve" startOffset="50%" text-anchor="middle">
+      DESTINY · FAR-AWAY · DREAMS
+    </textPath>
+  </text>
+  <text font-family="Georgia, serif" font-size="9" font-weight="bold" letter-spacing="1" fill="#000" dominant-baseline="middle">
+    <textPath href="#bottomCurve" startOffset="50%" text-anchor="middle">
+      LEGEND · ADVENTURE · HORIZON
+    </textPath>
+  </text>
+  
+  <!-- Side text -->
+  <text x="18" y="86" font-family="Georgia, serif" font-size="10" font-weight="bold" fill="#000">WANDER</text>
+  <text x="142" y="86" font-family="Georgia, serif" font-size="10" font-weight="bold" text-anchor="end" fill="#000">EXPLORE</text>
+  
+  <!-- Star compass rose -->
+  <g stroke="#000" stroke-width="1.2" opacity="0.5">
+    <line x1="80" y1="35" x2="80" y2="125"/>
+    <line x1="35" y1="80" x2="125" y2="80"/>
+    <line x1="50" y1="50" x2="110" y2="110"/>
+    <line x1="110" y1="50" x2="50" y2="110"/>
+  </g>
+  
+  <!-- Mountain peaks -->
+  <polygon points="80,40 92,62 75,56 88,68 62,62 80,75" fill="#000"/>
+  
+  <!-- Wavy lines (ocean) -->
+  <path d="M 50,105 Q 55,100 60,105 T 70,105 T 80,105 T 90,105 T 100,105" stroke="#000" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <path d="M 50,115 Q 55,110 60,115 T 70,115 T 80,115 T 90,115 T 100,115" stroke="#000" stroke-width="1.2" fill="none" opacity="0.6"/>
+  
+  <!-- Center hub -->
+  <circle cx="80" cy="80" r="3.5" fill="#000"/>
+</svg>
