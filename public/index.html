@@ -2484,9 +2484,7 @@ body {
   <div class="drag-handle" id="dragHandle"></div>
   <div class="sidebar-header">
     <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 16px;">
-      <div class="sidebar-logo" onclick="goToWelcome()" title="Back to start" role="button" tabindex="0" aria-label="Back to start">
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAYAAACdMcPMAAEAAElEQVR4nOydBbwUVfvHn9m9TXcqiJSk0oggIIqYiImF8ZrYYudrviYmdudfRbELEwkJpUQREKS74ebu+X9+Z/aZPTs7s3dv3wvPF497d3bizJkz9Ztnfo8VCuVTKBSiYDBIQClFlmVRIBCgcDish+E7hmMYkT3c/ptixuHv+M38jr/5O+bDnyi83MLg5QBeNs+Dv5vz5+X5DSsOfvPhevBw97p61ac06uI3T3c9vepRlDqgf3CfKKwuXvXyWrb53exPXnUvaVt5zbe48yju9Im2V3HmUdTpS6sdS9r2pdWG5b3+xd1+Zt8uCby80lgPUJ59r7jLSbR8kOx45rhe80+mfya7/n7Hv0Tt5Z63ec5Mpp39zjN+y090HnO3QUn7b/L9hs/vAe/h4QCRM2mIiCLXDVbpbw+v5Stl16u43b64+0yibVvU5ZbWMURIHr82L81rieKMm+w8/I6XVaX/lHT9y2L5Jd1+xak7n1PK6j4oTIosski57vf0L6ivCtrHb4uPqQHffcJruPs+zz1Nou9cV/7NfU7zu7Yw62Oub6Lzp3u4efx2z9dvOvfvhZ2Dy+ParLSvO0ty/V7Se7mKOH6V9Phf3OsYz301yfvtkl57+NWhNNa9vO/jS7IOpdFfizt9aWpfpbn/FXf6stj2qhD9qrB7t6LcXxY2TVkcm6Dfmfu7eR0QwP8gwvII/DefcPlvPnGZM3OvII9nrgyLwSzg8sm8KBegZl14Xjw9hqFOphBtnrTNYcUl0YndrIt72V4XXGZbFWX5LAyY6+T+bv7N9XAL8MUBfcJsd7Pu7u/utjfrk6iPJFp393f3MpOlONMke2GXzLTFXb7fNi7qtCVdfnHa3b2fl/SkUVz8DsrFrUOy7em+0Cru8ksq3JjH3NI6cRf1GJZoWGHzch9XzTq4zynmMdkcx69e7mMTT+9evnu+AMPM47B7fbzq6rVu5vLN87FXXUzM3xNtF3cbefWBwi78i7P/m/M026lox8+I+Iu/9ffYh8aJ+rN5HuTvRe+/uO7wqlfyFGefMactyfTuOpTGuaAkVOSyK4rSvKiv6O1XGpSk/sW9/ivussxP9/Bkpy/NvlCc7W8G5RRlWvOa331OixkWeTrnDs6xx4+Ivx7bzeuayuuegu/zCruOSNQ2Xsc/r+tTv+Ok1/2U+x7Mb/le94VmO3ldI3PbF/YA1t2f/M6zGF5QUEClQVH7UGneP5XG/lMUCutzyS7T7349mWW7xy/KOrjrmqg/eV1nF2e7Zaprcda9OPdefvtCcfpPSdq/pPqL1/oW9/7V1OGKMz3XpyQUZ3r3/UNxpvW6d1OF3FP73b94jcN/+x3/3Vqh1zxL8zrRfe53n7P1b4rs6E4e0TWpMQOIgOaNaXTmLBC6DxReogsLuTxNcXY898WM3w6W6EKxuJ3JLeryOvndKJfkwOGezr19vOblFmndndPrZJwIcz5mRzLn6VePwpZTmBgCvNa5uAdwr0jxZKf1oqQ346UpoCUzXUlvHEtyIisN0TGZA63f9MXFb/lFnYfXcaC4IlJxl1/cEy8vu7RPTolESL/xvW7I3Req7otY8/jsN39zer8LZL8LYXN8r5Ose/pkLiS86u43jdfNvddFfDLbj/tKaV3sYT64cQfm2z7x7WO/XRQ3PSbFqKhGwKiLeWNeSB08b8wVkZXE7qeUecyJnadQPEp6HqrK+N3UVla86lmUupfFOhZl+YmO96VxDVgY
-..." style="width: 40px; height: 40px; object-fit: contain;" alt="Relocamp">
+      <div class="sidebar-logo" onclick="goToWelcome()" title="Back to start" role="button" tabindex="0" aria-label="Back to start">🧭
         <span class="sidebar-logo-sub">← click to restart</span>
       </div>
       <button class="info-btn" onclick="showHowItWorks()" title="How it works" aria-label="How it works">ℹ️</button>
@@ -2512,6 +2510,30 @@ body {
       <div class="autocomplete-list" id="autocomplete" role="listbox"></div>
     </div>
     <div class="welcome-divider">or</div>
+    <div class="popular-routes" style="padding: 12px 16px;">
+      <span class="popular-routes-label">🗺️ Popular Routes</span>
+      <div class="route-card" onclick="exploreRoute('Amsterdam')">
+        <div class="route-emoji">🇪🇺</div>
+        <div class="route-text">
+          <div class="route-legs">Amsterdam → Berlin → Prague</div>
+          <div class="route-description">Classic Central Europe loop</div>
+        </div>
+      </div>
+      <div class="route-card" onclick="exploreRoute('Barcelona')">
+        <div class="route-emoji">⛰️</div>
+        <div class="route-text">
+          <div class="route-legs">Barcelona → Lyon → Milan</div>
+          <div class="route-description">Mediterranean to Alps</div>
+        </div>
+      </div>
+      <div class="route-card" onclick="exploreRoute('Paris')">
+        <div class="route-emoji">🌊</div>
+        <div class="route-text">
+          <div class="route-legs">Paris → Amsterdam → Hamburg</div>
+          <div class="route-description">North European exploration</div>
+        </div>
+      </div>
+    </div>
     <div class="social-proof" id="socialProof"></div>
     <div class="subscribe-cta" id="heroSubscribe">
       <h4>Get deal alerts</h4>
