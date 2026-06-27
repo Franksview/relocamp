@@ -1916,24 +1916,26 @@ body {
 /* ─── SUBSCRIBE CTA ─── */
 .subscribe-cta {
   padding: 20px;
-  margin: 12px 0 0;
-  background: var(--paper);
-  border-radius: var(--radius-sm);
+  margin: 16px 0 0;
+  background: white;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .subscribe-cta h4 {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 400;
   color: var(--ink);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .subscribe-cta p {
-  font-size: 0.75rem;
-  color: var(--warm);
-  margin-bottom: 10px;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  color: var(--stone);
+  margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .sub-form {
@@ -1998,8 +2000,9 @@ body {
 
 /* ─── HERO WELCOME STATE ─── */
 .welcome-hero {
-  padding: 32px 20px 24px;
+  padding: 32px 20px 20px;
   text-align: center;
+  background: linear-gradient(180deg, rgba(255,245,235,0.6) 0%, transparent 100%);
 }
 
 .welcome-hero h2 {
@@ -2668,7 +2671,9 @@ function escapeHtml(text) {
 function initMap() {
   map = L.map('map', {
     center: [50, 10],
-    zoom: 5,
+    zoom: 6,
+    minZoom: 6,
+    maxZoom: 18,
     zoomControl: false,
     attributionControl: false,
   });
