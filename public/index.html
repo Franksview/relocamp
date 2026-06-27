@@ -138,6 +138,120 @@ body {
   margin-left: 8px;
 }
 
+.info-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.info-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ─── HOW IT WORKS MODAL ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.modal-close:hover {
+  opacity: 1;
+}
+
+.modal-content h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.8rem;
+  color: var(--forest);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #f9f5f0;
+  border-radius: 8px;
+  border-left: 4px solid var(--sunset);
+}
+
+.step-number {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.step-text strong {
+  display: block;
+  color: var(--forest);
+  margin-bottom: 4px;
+}
+
+.step-text p {
+  font-size: 0.9rem;
+  color: var(--stone);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.info-note {
+  background: #f0f4ff;
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid #4a7ba7;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+.info-note strong {
+  color: var(--forest);
+}
+
 .map-logo-badge {
   position: fixed;
   top: 4px;
@@ -2099,6 +2213,62 @@ body {
   text-align: right;
 }
 
+/* ─── POPULAR ROUTES ─── */
+.popular-routes {
+  padding: 12px 16px;
+}
+
+.popular-routes-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--stone);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.route-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: #f9f5f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #ede9e4;
+}
+
+.route-card:hover {
+  background: #f3ebe2;
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.route-emoji {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.route-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.route-legs {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #2c2c2c;
+  margin-bottom: 2px;
+}
+
+.route-description {
+  font-size: 0.75rem;
+  color: var(--stone);
+}
+
 .popular-section {
   padding: 0 20px 8px;
 }
@@ -2313,10 +2483,13 @@ body {
 <div class="sidebar" id="sidebar">
   <div class="drag-handle" id="dragHandle"></div>
   <div class="sidebar-header">
-    <div class="sidebar-logo" onclick="goToWelcome()" title="Back to start" role="button" tabindex="0" aria-label="Back to start">Relo<span>camp</span><span class="sidebar-logo-sub">← click to restart</span></div>
-    <div class="search-input-wrap">
-      <input type="text" id="searchInput" placeholder="Enter a city to explore deals..." autocomplete="off" aria-label="Search for a city" role="combobox" aria-expanded="false" aria-controls="autocomplete">
-      <div class="autocomplete-list" id="autocomplete" role="listbox"></div>
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 16px;">
+      <div class="sidebar-logo" onclick="goToWelcome()" title="Back to start" role="button" tabindex="0" aria-label="Back to start">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAYAAACdMcPMAAEAAElEQVR4nOydBbwUVfvHn9m9TXcqiJSk0oggIIqYiImF8ZrYYudrviYmdudfRbELEwkJpUQREKS74ebu+X9+Z/aZPTs7s3dv3wvPF497d3bizJkz9Ztnfo8VCuVTKBSiYDBIQClFlmVRIBCgcDish+E7hmMYkT3c/ptixuHv+M38jr/5O+bDnyi83MLg5QBeNs+Dv5vz5+X5DSsOfvPhevBw97p61ac06uI3T3c9vepRlDqgf3CfKKwuXvXyWrb53exPXnUvaVt5zbe48yju9Im2V3HmUdTpS6sdS9r2pdWG5b3+xd1+Zt8uCby80lgPUJ59r7jLSbR8kOx45rhe80+mfya7/n7Hv0Tt5Z63ec5Mpp39zjN+y090HnO3QUn7b/L9hs/vAe/h4QCRM2mIiCLXDVbpbw+v5Stl16u43b64+0yibVvU5ZbWMURIHr82L81rieKMm+w8/I6XVaX/lHT9y2L5Jd1+xak7n1PK6j4oTIosski57vf0L6ivCtrHb4uPqQHffcJruPs+zz1Nou9cV/7NfU7zu7Yw62Oub6Lzp3u4efx2z9dvOvfvhZ2Dy+ParLSvO0ty/V7Se7mKOH6V9Phf3OsYz301yfvtkl57+NWhNNa9vO/jS7IOpdFfizt9aWpfpbn/FXf6stj2qhD9qrB7t6LcXxY2TVkcm6Dfmfu7eR0QwP8gwvII/DefcPlvPnGZM3OvII9nrgyLwSzg8sm8KBegZl14Xjw9hqFOphBtnrTNYcUl0YndrIt72V4XXGZbFWX5LAyY6+T+bv7N9XAL8MUBfcJsd7Pu7u/utjfrk6iPJFp393f3MpOlONMke2GXzLTFXb7fNi7qtCVdfnHa3b2fl/SkUVz8DsrFrUOy7em+0Cru8ksq3JjH3NI6cRf1GJZoWGHzch9XzTq4zynmMdkcx69e7mMTT+9evnu+AMPM47B7fbzq6rVu5vLN87FXXUzM3xNtF3cbefWBwi78i7P/m/M026lox8+I+Iu/9ffYh8aJ+rN5HuTvRe+/uO7wqlfyFGefMactyfTuOpTGuaAkVOSyK4rSvKiv6O1XGpSk/sW9/ivussxP9/Bkpy/NvlCc7W8G5RRlWvOa331OixkWeTrnDs6xx4+Ivx7bzeuayuuegu/zCruOSNQ2Xsc/r+tTv+Ok1/2U+x7Mb/le94VmO3ldI3PbF/YA1t2f/M6zGF5QUEClQVH7UGneP5XG/lMUCutzyS7T7349mWW7xy/KOrjrmqg/eV1nF2e7Zaprcda9OPdefvtCcfpPSdq/pPqL1/oW9/7V1OGKMz3XpyQUZ3r3/UNxpvW6d1OF3FP73b94jcN/+x3/3Vqh1zxL8zrRfe53n7P1b4rs6E4e0TWpMQOIgOaNaXTmLBC6DxReogsLuTxNcXY898WM3w6W6EKxuJ3JLeryOvndKJfkwOGezr19vOblFmndndPrZJwIcz5mRzLn6VePwpZTmBgCvNa5uAdwr0jxZKf1oqQ346UpoCUzXUlvHEtyIisN0TGZA63f9MXFb/lFnYfXcaC4IlJxl1/cEy8vu7RPTolESL/xvW7I3Req7otY8/jsN39zer8LZL8LYXN8r5Ose/pkLiS86u43jdfNvddFfDLbj/tKaV3sYT64cQfm2z7x7WO/XRQ3PSbFqKhGwKiLeWNeSB08b8wVkZXE7qeUecyJnadQPEp6HqrK+N3UVla86lmUupfFOhZl+YmO96VxDVgY
+..." style="width: 40px; height: 40px; object-fit: contain;" alt="Relocamp">
+        <span class="sidebar-logo-sub">← click to restart</span>
+      </div>
+      <button class="info-btn" onclick="showHowItWorks()" title="How it works" aria-label="How it works">ℹ️</button>
     </div>
   </div>
   <div class="start-over-bar" id="startOverBar">
@@ -2334,11 +2507,15 @@ body {
       <span class="popular-departures-label">✨ Departing Soon</span>
       <div id="departureCards"></div>
     </div>
+    <div class="search-input-wrap">
+      <input type="text" id="searchInput" placeholder="Enter a city to explore deals..." autocomplete="off" aria-label="Search for a city" role="combobox" aria-expanded="false" aria-controls="autocomplete">
+      <div class="autocomplete-list" id="autocomplete" role="listbox"></div>
+    </div>
     <div class="welcome-divider">or</div>
-    <button class="surprise-btn" id="surpriseBtn" onclick="surpriseMe()" style="width: calc(100% - 32px); margin: 12px 16px 0;">
-      <span class="surprise-btn-emoji">🎲</span>
-      <span>Random trip</span>
-    </button>
+    <div class="popular-routes" id="popularRoutes">
+      <span class="popular-routes-label">🗺️ Popular Routes</span>
+      <div id="routeCards"></div>
+    </div>
     <div class="social-proof" id="socialProof"></div>
     <div class="subscribe-cta" id="heroSubscribe">
       <h4>Get deal alerts</h4>
@@ -2632,21 +2809,81 @@ function getDeal(index) { return _dealStore[index]; }
 
 // ─── POPULAR DEPARTURES ───
 const POPULAR_DEPARTURES = [
-  { from: 'Amsterdam', to: 'Barcelona', price: 340, emoji: '🚐' },
-  { from: 'Munich', to: 'Vienna', price: 290, emoji: '🚌' },
-  { from: 'Paris', to: 'Milan', price: 380, emoji: '🚐' },
+  { from: 'Frankfurt', to: 'Warsaw', price: 1, emoji: '🚐', duration: '8 days' },
+  { from: 'Berlin', to: 'Prague', price: 35, emoji: '🚌', duration: '5 days' },
+  { from: 'Munich', to: 'Vienna', price: 79, emoji: '🚐', duration: '6 days' },
 ];
+
+function fetchPopularDepartures() {
+  initPopularDepartures();
+}
+
+// ─── POPULAR ROUTES ───
+const POPULAR_ROUTES = [
+  { legs: 'Amsterdam → Berlin → Prague', description: 'Classic Central Europe loop', emoji: '🇪🇺' },
+  { legs: 'Barcelona → Lyon → Milan', description: 'Mediterranean to Alps', emoji: '⛰️' },
+  { legs: 'Paris → Amsterdam → Hamburg', description: 'North European exploration', emoji: '🌊' },
+];
+
+function initPopularRoutes() {
+  const container = document.getElementById('routeCards');
+  if (!container) {
+    console.warn('routeCards container not found');
+    return;
+  }
+
+  const html = POPULAR_ROUTES.map((route, idx) => {
+    const startCity = route.legs.split(' → ')[0];
+    return `
+      <div class="route-card" data-route-index="${idx}">
+        <div class="route-emoji">${route.emoji}</div>
+        <div class="route-text">
+          <div class="route-legs">${route.legs}</div>
+          <div class="route-description">${route.description}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = html;
+  console.log('Routes rendered:', html.length > 0 ? 'yes' : 'no');
+
+  // Add event listeners
+  setTimeout(() => {
+    container.querySelectorAll('.route-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const idx = card.dataset.routeIndex;
+        const startCity = POPULAR_ROUTES[idx].legs.split(' → ')[0];
+        exploreRoute(startCity);
+      });
+    });
+  }, 0);
+}
+
+function exploreRoute(startCity) {
+  const input = document.getElementById('searchInput');
+  if (input) {
+    input.value = startCity;
+    input.focus();
+    setTimeout(() => selectCity(resolveCity(startCity)), 100);
+  }
+}
 
 function initPopularDepartures() {
   const container = document.getElementById('departureCards');
   if (!container) return;
+
+  if (POPULAR_DEPARTURES.length === 0) {
+    container.innerHTML = '<div style="padding:12px;font-size:0.9rem;color:#999;">Loading deals...</div>';
+    return;
+  }
 
   container.innerHTML = POPULAR_DEPARTURES.map(dep => `
     <div class="departure-card" onclick="handleDepartureClick('${escapeHtml(dep.from)}', '${escapeHtml(dep.to)}')">
       <div class="departure-emoji">${dep.emoji}</div>
       <div class="departure-text">
         <div class="departure-route">${escapeHtml(dep.from)} → ${escapeHtml(dep.to)}</div>
-        <div class="departure-meta">4-5 days • Flexible</div>
+        <div class="departure-meta">${dep.duration} • Flexible</div>
       </div>
       <div class="departure-price">€${dep.price}</div>
     </div>
@@ -4605,9 +4842,32 @@ if (window.innerWidth <= 768) {
 
 // ─── INIT ───
 initMap();
-initPopularDepartures();
+fetchPopularDepartures().catch(() => initPopularDepartures()); // Fallback if fetch fails
+initPopularRoutes();
 renderPopularChips();
 loadSocialProof();
+
+// ─── HOW IT WORKS MODAL ───
+function showHowItWorks() {
+  const modal = document.getElementById('howItWorksModal');
+  if (modal) {
+    modal.classList.add('visible');
+  }
+}
+
+function closeHowItWorks(event) {
+  const modal = document.getElementById('howItWorksModal');
+  if (modal && (!event || event.target === modal)) {
+    modal.classList.remove('visible');
+  }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeHowItWorks();
+  }
+});
 </script>
 
 <!-- Footer with internal links — visible on desktop, hidden on mobile (sidebar + map is full-screen there) -->
@@ -4658,6 +4918,47 @@ loadSocialProof();
   <span class="footer-sep">·</span>
   <a href="/blog" class="footer-blog">Blog</a>
 </footer>
+
+<!-- How It Works Modal -->
+<div id="howItWorksModal" class="modal-overlay" onclick="closeHowItWorks(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeHowItWorks()">✕</button>
+    <h2>How Relocamp Works</h2>
+    <div class="modal-body">
+      <div class="step">
+        <div class="step-number">1️⃣</div>
+        <div class="step-text">
+          <strong>Search a City</strong>
+          <p>Enter any European city to discover campervan relocation deals departing from that location.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">2️⃣</div>
+        <div class="step-text">
+          <strong>Browse Deals</strong>
+          <p>See available routes, prices, and travel times. Pick one that matches your adventure goals.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">3️⃣</div>
+        <div class="step-text">
+          <strong>Plan Your Trip</strong>
+          <p>Add multiple legs to create your perfect multi-city journey across Europe.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">4️⃣</div>
+        <div class="step-text">
+          <strong>Book & Travel</strong>
+          <p>Click "Book" to go to our partner and complete your booking. Off you go!</p>
+        </div>
+      </div>
+      <div class="info-note">
+        <strong>💡 The Deal:</strong> Companies need vans moved between cities. You get cheap transportation + freedom to explore. Win-win!
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
